@@ -22,7 +22,7 @@ def updateUsers():
             return(request.form["password"])
         except:
             return "Post"
-     else:
+    else:
         return "Not Post"
 
 
