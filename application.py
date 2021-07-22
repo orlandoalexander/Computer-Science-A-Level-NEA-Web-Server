@@ -25,8 +25,19 @@ def updateUsers():
             return "success" # confirms that MySQL database was successfully updated
         except:
             return "error" # signifies that an error occured when adding the user's data in the 'users' table
+        
     elif request.method == "GET":
-        return "GET"
+        try:
+            mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+            mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+            data = request.form # assigns the data sent to the API to a variable ('data')
+            query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
+            mycursor.execute(query)
+            result = mycursor.fetchone()
+            return result
+        except:
+            return "error"
+            
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
