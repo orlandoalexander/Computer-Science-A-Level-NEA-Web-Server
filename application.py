@@ -14,18 +14,18 @@ def test():
 @application.route("/users", methods = ["POST", "GET"])
 # route to modify the 'users' table
 def updateUsers():
-    if request.method == "POST":
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database
+    if request.method == "POST": # if the request from the mobile app is a 'post' request (i.e. adding data to the 'users' table)
+        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        data = request.form
-        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password'])
-        mycursor.execute(query)
-        mydb.commit()
-        return "success"
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
+        mycursor.execute(query) # executes the query in the MySQL database
+        mydb.commit() # commits the changes to the MySQL database made by the executed query
+        return "success" # confirms that MySQL database was successfully updated
     elif request.method == "GET":
         return "GET"
 
-if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
-    application.run(debug=True)  # begins running the Api server
+if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
+    application.run(debug=True)  # ...then the API server begins running
 
 
