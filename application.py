@@ -10,12 +10,15 @@ api = Api(application)  # wrap 'application' variable in restful API
 def test():
     return "Working" # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed 
 
-@application.route("/users")
+@application.route("/users", methods = ["POST", "GET"])
 # route to modify the 'users' table
 def updateUsers():
 
-    #if request.method == "POST":
-    return(request.form["password"])
+    if request.method == "POST":
+        try:
+            return(request.form["password"])
+        except:
+            return "Hello"
 
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
