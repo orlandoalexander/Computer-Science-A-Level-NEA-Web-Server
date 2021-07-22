@@ -17,7 +17,6 @@ def updateUsers():
     if request.method == "POST":
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('WAs','sad','qdd','EDD','Sss')"
         data = request.form
         query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password'])
         mycursor.execute(query)
