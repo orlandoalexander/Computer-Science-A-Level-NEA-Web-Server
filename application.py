@@ -8,5 +8,7 @@ api = Api(app)  # wrap 'app' variable in restful Api
 def test():
     return "Working"
 
+if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
+    app.run(debug=True)  # begins running the Api server
 
 
