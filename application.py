@@ -21,8 +21,8 @@ def updateUsers():
         #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (request.form["accountID"], request.form["firstName"], request.form["surname"], request.form["email"], request.form["password"])"
         mycursor.execute(query)
         #mydb.commit()
-        test = (request.form["user"])
-        return type(test)
+        data = request.form.to_dict()
+        return data
     elif request.method == "GET":
         return "GET"
 
