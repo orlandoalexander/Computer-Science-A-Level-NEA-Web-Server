@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_restful import Api
+import mysql.connector
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
@@ -13,16 +14,13 @@ def test():
 @application.route("/users", methods = ["POST", "GET"])
 # route to modify the 'users' table
 def updateUsers():
-    method = request.method
     if request.method == "POST":
-        try:
-            #return "POST"
-            return({"password":request.form["password"], "method":method})
-        except:
-            return method
+        mydb = mysql.connector.connect(host=request.form["host"], user=request.form["user"], passwd=request.form["passwd"], database="ebdb")  # initialises the database
+        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (request.form["accountID"], request.form["firstName"], request.form["surname"], request.form["email"], request.form["password"])"
+        mycursor.execute(query)
     else:
-        return method
-
+        pass
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
     application.run(debug=True)  # begins running the Api server
