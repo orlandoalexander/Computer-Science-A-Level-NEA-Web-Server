@@ -19,7 +19,7 @@ def updateUsers():
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('WAs','sad','qdd','EDD','Sss')"
         data = request.form
-        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (data['accountID'], data['firstName'], data['surname'], data['email'], data['password'])"
+        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password'])
         mycursor.execute(query)
         mydb.commit()
         return "success"
