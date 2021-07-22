@@ -7,5 +7,9 @@ api = Api(app)  # wrap 'app' variable in restful Api
 @app.route("/")
 def test():
     return "Working"
-  
+
+@app.route("/users", methods = ["POST","GET"])
+ def update_users():
+   if request.method == "POST":
+     print(request.form["accountID"])  
 
