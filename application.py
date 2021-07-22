@@ -13,12 +13,17 @@ def test():
 @application.route("/users", methods = ["POST", "GET"])
 # route to modify the 'users' table
 def updateUsers():
-    print(request.method)
+    try:
+        print(request.method)
+    except:
+        print(request.method())
     if request.method == "POST":
         try:
             return(request.form["password"])
         except:
-            return "Hello"
+            return "Post"
+     else:
+        return "Not Post"
 
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
