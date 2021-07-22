@@ -15,11 +15,11 @@ def test():
 # route to modify the 'users' table
 def updateUsers():
     if request.method == "POST":
-        mydb = mysql.connector.connect(host=request.form["host"], user=request.form["user"], passwd=request.form["passwd"], database="ebdb")  # initialises the database
+        mydb = mysql.connector.connect(host=(request.form["host"]).decode(), user=(request.form["user"]).decode(), passwd=(request.form["passwd"]).decode(), database="ebdb")  # initialises the database
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (request.form["accountID"], request.form["firstName"], request.form["surname"], request.form["email"], request.form["password"])"
+        #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (request.form["accountID"].decode(), request.form["firstName"].decode(), request.form["surname"].decode(), request.form["email"].decode(), request.form["password"].decode())"
         #mycursor.execute(query)
-        return request.form["host"]
+        return request.form["host"].decode()
     else:
         pass
 
