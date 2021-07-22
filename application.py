@@ -17,12 +17,12 @@ def updateUsers():
     if request.method == "POST":
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('WAs','sad','qdd','EDD','Sss')"
-        #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (request.form["accountID"], request.form["firstName"], request.form["surname"], request.form["email"], request.form["password"])"
-        mycursor.execute(query)
-        #mydb.commit()
+        #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('WAs','sad','qdd','EDD','Sss')"
         data = request.form
-        return data["accountID"]
+        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (data["accountID"], data["firstName"], data["surname"], data["email"], data["password"])"
+        mycursor.execute(query)
+        mydb.commit()
+        return "success"
     elif request.method == "GET":
         return "GET"
 
