@@ -36,7 +36,7 @@ def updateUsers():
             result = mycursor.fetchone()
             return result
         except:
-            return "error"
+            return result
             
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
