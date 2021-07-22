@@ -33,7 +33,7 @@ def updateUsers():
         except:
             pass
         data = request.form # assigns the data sent to the API to a variable ('data')
-        #query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
+        query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
         #mycursor.execute(query)
         #result = mycursor.fetchone()
         return "hello"
