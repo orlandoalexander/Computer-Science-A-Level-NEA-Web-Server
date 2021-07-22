@@ -20,8 +20,8 @@ def updateUsers():
         #query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES (request.form["accountID"].decode(), request.form["firstName"].decode(), request.form["surname"].decode(), request.form["email"].decode(), request.form["password"].decode())"
         #mycursor.execute(query)
         return request.form["host"].decode()
-    else:
-        pass
+    elif request.method == "GET":
+        return "GET"
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
     application.run(debug=True)  # begins running the Api server
