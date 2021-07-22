@@ -17,7 +17,7 @@ def updateUsers():
         method = request.method
     except:
         method = request.method(),"()"
-    if request.method() == "POST":
+    if request.method == "POST":
         try:
             return "POST"
             #return(request.form["password"], method)
