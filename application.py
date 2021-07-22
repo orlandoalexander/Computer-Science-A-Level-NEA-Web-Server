@@ -11,10 +11,8 @@ passwd = "5martB3ll"
 
 @application.route("/")
 def test():
-    f = open('passwords.txt', 'r')
-    data = f.read()
-    f.close()
-    return data
+    return "Working"
+
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
     application.run(debug=True)  # begins running the Api server
