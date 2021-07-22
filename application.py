@@ -13,10 +13,7 @@ def test():
 @application.route("/users", methods = ["POST", "GET"])
 # route to modify the 'users' table
 def updateUsers():
-    try:
-        method = request.method
-    except:
-        method = request.method(),"()"
+    method = request.method
     if request.method == "POST":
         try:
             return "POST"
