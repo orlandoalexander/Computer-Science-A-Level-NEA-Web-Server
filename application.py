@@ -11,8 +11,9 @@ def test():
 
 @application.route("/users")
 def updateUsers():
-    if request.method == "POST":
-        return(request.form["password"])
+    return "Hello"
+    #if request.method == "POST":
+        #return(request.form["password"])
 
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)
