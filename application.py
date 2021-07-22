@@ -15,13 +15,16 @@ def test():
 # route to modify the 'users' table
 def updateUsers():
     if request.method == "POST": # if the request from the mobile app is a 'post' request (i.e. adding data to the 'users' table)
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
-        mycursor.execute(query) # executes the query in the MySQL database
-        mydb.commit() # commits the changes to the MySQL database made by the executed query
-        return "success" # confirms that MySQL database was successfully updated
+        try:
+            mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+            mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+            data = request.form # assigns the data sent to the API to a variable ('data')
+            query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
+            mycursor.execute(query) # executes the query in the MySQL database
+            mydb.commit() # commits the changes to the MySQL database made by the executed query
+            return "success" # confirms that MySQL database was successfully updated
+        except:
+            return "error" # signifies that an error occured when adding the user's data in the 'users' table
     elif request.method == "GET":
         return "GET"
 
