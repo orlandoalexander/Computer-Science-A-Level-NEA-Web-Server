@@ -31,7 +31,7 @@ def updateUsers():
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
+        query = "SELECT accountID FROM users WHERE email = 'aorlando04@gmail.com' AND password = 'e6c513262cc2db19e62ff646d2ff116727662176eaad3d9c0f582dd1d26b235d'" % (data['email'], data['password'])
         mycursor.execute(query)
         result = mycursor.fetchone()
         if result == None:
