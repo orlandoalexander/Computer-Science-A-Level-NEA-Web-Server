@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Api
 import mysql.connector
 
@@ -74,7 +74,7 @@ def view_audioMessages():
         result_dict["length"] = str(len(result))
         for i in result:
             result_dict[str(result.index(i))] = str(i)
-        return result_dict
+        return jsonify(result_dict)
     except:
         return "error"
     
