@@ -39,7 +39,7 @@ def verifyUser():
         if result == None:
             return "none"
         else:
-            return data
+            return result
     except:
         return "error"
     
@@ -63,11 +63,17 @@ def verifyAccount():
 @application.route("/view_audioMessages", methods = ["POST"])
 # route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
 def view_audioMessages():
-    mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-    data = request.form # assigns the data sent to the API to a variable ('data')
-    query = "SELECT * FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
-    mycursor.execute(query)
+    try:
+        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        query = "SELECT messageName, pathVoice, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
+        mycursor.execute(query)
+        result = mycursor.fetchall()
+        return result
+    except:
+        return "error"
+    
     
         
             
