@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_restful import Api
 import mysql.connector
+import logging
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
@@ -34,7 +35,7 @@ def updateUsers():
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
         mycursor.execute(query)
         result = mycursor.fetchone()
-        print(result)
+        application.logging.info(result)
         if result == None:
             return "error"
         else:
