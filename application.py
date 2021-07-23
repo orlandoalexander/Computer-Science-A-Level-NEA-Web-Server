@@ -14,7 +14,8 @@ def test():
 @application.route("/users", methods = ["POST", "GET"])
 # route to modify the 'users' table
 def updateUsers():
-    if request.method == "POST": # if the request from the mobile app is a 'post' request (i.e. adding data to the 'users' table)
+    data = request.form 
+    if data["method"] == "POST": # if the request from the mobile app is a 'POST' request (i.e. adding data to the 'users' table)
         try:
             mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
             mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
@@ -26,19 +27,14 @@ def updateUsers():
         except:
             return "error" # signifies that an error occured when adding the user's data in the 'users' table
         
-    elif request.method == "GET":
-        try:
-            mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-            mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        except:
-            pass
+    elif data["method"] == "GET":
+        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        data1 = data['email']
-        data2 = data['password']
-        #query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
-        #mycursor.execute(query)
-        #result = mycursor.fetchone()
-        return "hello"
+        query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
+        mycursor.execute(query)
+        result = mycursor.fetchone()
+        return result
         
             
 
