@@ -37,7 +37,7 @@ def updateUsers():
         if result == None:
             return "error"
         else:
-            return "hello"
+            return data
         
             
 
