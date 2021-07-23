@@ -71,7 +71,7 @@ def view_audioMessages():
         mycursor.execute(query)
         result = mycursor.fetchall()
         result_dict = dict()
-        result_dict["length"] = str(len(result))
+        result_dict["length"] = len(result)
         for i in result:
             result_dict[str(result.index(i))] = str(i)
         return jsonify(result_dict)
