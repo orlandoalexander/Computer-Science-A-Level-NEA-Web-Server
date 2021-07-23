@@ -34,7 +34,10 @@ def updateUsers():
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
         mycursor.execute(query)
         result = mycursor.fetchone()
-        return result
+        if result == None:
+            return "error"
+        else:
+            return result
         
             
 
