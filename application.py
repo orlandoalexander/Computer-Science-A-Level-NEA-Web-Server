@@ -70,7 +70,11 @@ def view_audioMessages():
         query = "SELECT messageName, pathVoice, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
         mycursor.execute(query)
         result = mycursor.fetchall()
-        return result
+        result_dict = dict()
+        result_dict["length"] = str(len(result))
+        for i in result:
+            result_dict[str(result.index(i))] = str(i)
+        return result_dict
     except:
         return "error"
     
