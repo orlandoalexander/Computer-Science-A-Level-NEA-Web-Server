@@ -73,7 +73,7 @@ def view_audioMessages():
         result_dict = dict()
         result_dict["length"] = len(result)
         for i in result:
-            result_dict[str(result.index(i))] = str(i)
+            result_dict[str(result.index(i))] = i
         return jsonify(result_dict)
     except:
         return "error"
