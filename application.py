@@ -83,30 +83,30 @@ def view_audioMessages():
 @application.route("/uploadS3", methods = ["POST"])
 # route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
 def uploadS3():
-    try:
-        self.f = request.files["file"]
-        self.accessKey = request.data["accessKey"]
-        self.secretKey = request.data["secretKey"]
-        self.bucketName = request.data["bucketName"]
-        self.s3File = request.data["s3File"]
-        s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
-        s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
-        return "success"
-    except:
-        return "error"
+    #try:
+    self.f = request.files["file"]
+    self.accessKey = request.data["accessKey"]
+    self.secretKey = request.data["secretKey"]
+    self.bucketName = request.data["bucketName"]
+    self.s3File = request.data["s3File"]
+    s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
+    s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
+        #return "success"
+    #except:
+        #return "error"
         
 @application.route("/update_audioMessages", methods = ["POST"])
 def update_audioMessages():
-    try:
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-        data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])
-        mycursor.execute(query)
-        mydb.commit() # commits the changes to the MySQL database made by the executed query
-        return "success"
-    except:
-        return "error"
+    #try:
+    mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+    data = request.form # assigns the data sent to the API to a variable ('data')
+    query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])
+    mycursor.execute(query)
+    mydb.commit() # commits the changes to the MySQL database made by the executed query
+        #return "success"
+    #except:
+        #return "error"
         
         
             
