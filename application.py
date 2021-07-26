@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 from flask_restful import Api
 import mysql.connector
 import boto3
+from werkzeug import secure_filename
+import os
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
@@ -85,12 +87,14 @@ def view_audioMessages():
 def uploadS3():
     #try:
     self.f = request.files["file"]
+    full_filename = secure_filename(f.filename)
+    f.save(os.path.join(app.config['uploadFolder'], full_filename))
     self.accessKey = request.data["accessKey"]
     self.secretKey = request.data["secretKey"]
     self.bucketName = request.data["bucketName"]
     self.s3File = request.data["s3File"]
     s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
-    s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
+    s3.upload_file(Filename=full_filename, Bucket=self.bucketName, Key=self.s3File)
         #return "success"
     #except:
         #return "error"
