@@ -68,7 +68,7 @@ def view_audioMessages():
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "SELECT messageName, pathVoice, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
+        query = "SELECT messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
         mycursor.execute(query)
         result = mycursor.fetchall()
         result_dict = dict()
@@ -90,7 +90,7 @@ def uploadS3():
         self.bucketName = request.form["bucketName"]
         self.s3File = request.form["s3File"]
         s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
-        s3.upload_file(Filename=self.audioData, Bucket=self.bucketName, Key=s3File)
+        s3.upload_file(Filename=self.audioData, Bucket=self.bucketName, Key=self.s3File)
         return "success"
     except:
         return "error"
@@ -101,7 +101,7 @@ def update_audioMessages():
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "INSERT INTO audioMessages (messageID, messageName, pathVoice, fileText, accountID) VALUES ('%s', '%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['pathVoice'], data['fileText'], data['accountID'])
+        query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])
         mycursor.execute(query)
         mydb.commit() # commits the changes to the MySQL database made by the executed query
         return "success"
