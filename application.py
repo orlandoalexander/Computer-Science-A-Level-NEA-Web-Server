@@ -95,6 +95,7 @@ def uploadS3():
     self.s3File = request.data["s3File"]
     s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
     s3.upload_file(Filename=full_filename, Bucket=self.bucketName, Key=self.s3File)
+    return "s3"
         #return "success"
     #except:
         #return "error"
@@ -108,6 +109,7 @@ def update_audioMessages():
     query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])
     mycursor.execute(query)
     mydb.commit() # commits the changes to the MySQL database made by the executed query
+    return "db"
         #return "success"
     #except:
         #return "error"
