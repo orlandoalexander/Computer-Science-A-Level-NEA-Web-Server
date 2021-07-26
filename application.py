@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Api
 import mysql.connector
 import boto3
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 import os.path
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
