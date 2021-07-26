@@ -84,13 +84,13 @@ def view_audioMessages():
 # route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
 def uploadS3():
     try:
+        self.f = request.files["file"]
         self.accessKey = request.form["accessKey"]
         self.secretKey = request.form["secretKey"]
-        self.audioData = request.form["audioData"]
         self.bucketName = request.form["bucketName"]
         self.s3File = request.form["s3File"]
         s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
-        s3.upload_file(Filename=self.audioData, Bucket=self.bucketName, Key=self.s3File)
+        s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
         return "success"
     except:
         return "error"
