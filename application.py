@@ -88,13 +88,13 @@ def uploadS3():
     #try:
     self.f = request.files["file"]
     full_filename = secure_filename(f.filename)
-    self.f.save(os.path.join(application.config['UPLOAD_FOLDER'], full_filename))
+    self.f.save(os.path.join(app.config['UPLOAD_FOLDER'], full_filename))
     self.accessKey = request.data["accessKey"]
     self.secretKey = request.data["secretKey"]
     self.bucketName = request.data["bucketName"]
     self.s3File = request.data["s3File"]
     s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
-    s3.upload_file(Filename=full_filename, Bucket=self.bucketName, Key=self.s3File)
+    s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
     return "s3"
         #return "success"
     #except:
