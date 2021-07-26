@@ -87,7 +87,7 @@ def view_audioMessages():
 def uploadS3():
     #try:
     self.f = request.files["file"]
-    full_filename = secure_filename(f.filename)
+    full_filename = secure_filename(self.f.filename)
     self.f.save(os.path.join(app.config['UPLOAD_FOLDER'], full_filename))
     self.f.seek(0)
     content = self.f.read()
