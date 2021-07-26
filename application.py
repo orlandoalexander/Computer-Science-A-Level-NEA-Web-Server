@@ -88,7 +88,7 @@ def uploadS3():
     #try:
     self.f = request.files["file"]
     full_filename = secure_filename(f.filename)
-    f.save(os.path.join(app.config['uploadFolder'], full_filename))
+    f.save(os.path.join(app.config['UPLOAD_FOLDER'], full_filename))
     self.accessKey = request.data["accessKey"]
     self.secretKey = request.data["secretKey"]
     self.bucketName = request.data["bucketName"]
