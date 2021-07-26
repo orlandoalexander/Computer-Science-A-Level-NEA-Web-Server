@@ -85,10 +85,10 @@ def view_audioMessages():
 def uploadS3():
     try:
         self.f = request.files["file"]
-        self.accessKey = request.form["accessKey"]
-        self.secretKey = request.form["secretKey"]
-        self.bucketName = request.form["bucketName"]
-        self.s3File = request.form["s3File"]
+        self.accessKey = request.data["accessKey"]
+        self.secretKey = request.data["secretKey"]
+        self.bucketName = request.data["bucketName"]
+        self.s3File = request.data["s3File"]
         s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
         s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
         return "success"
@@ -113,5 +113,4 @@ def update_audioMessages():
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
-
 
