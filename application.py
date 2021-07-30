@@ -91,12 +91,12 @@ def uploadS3():
     f.save("/tmp/0001")
     #f.seek(0)
     with open(f, 'r') as f_in:
-    for line in f_in:
-        tokens = line.split('\t')
-        # if len(tokens) < 2:
-        #    continue
-        bytes_part = ast.literal_eval(tokens[1])
-        content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
+        for line in f_in:
+            tokens = line.split('\t')
+            # if len(tokens) < 2:
+            #    continue
+            bytes_part = ast.literal_eval(tokens[1])
+            content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
     #content = f.read()
     #content = content.decode("utf-8")
 #     self.accessKey = request.data["accessKey"]
