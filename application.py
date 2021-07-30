@@ -90,8 +90,15 @@ def uploadS3():
     full_filename = secure_filename(f.filename)
     f.save("/tmp/0001")
     #f.seek(0)
-    content = f.read()
-    content = content.decode("utf-8")
+    with open(f, 'r') as f_in:
+    for line in f_in:
+        tokens = line.split('\t')
+        # if len(tokens) < 2:
+        #    continue
+        bytes_part = ast.literal_eval(tokens[1])
+        content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
+    #content = f.read()
+    #content = content.decode("utf-8")
 #     self.accessKey = request.data["accessKey"]
 #     self.secretKey = request.data["secretKey"]
 #     self.bucketName = request.data["bucketName"]
