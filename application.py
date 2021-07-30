@@ -89,7 +89,7 @@ def uploadS3():
     f = request.files["file"]
     full_filename = secure_filename(f.filename)
     f.save("/tmp/0001")
-    f.seek(0)
+    #f.seek(0)
     content = f.read()
     content = content.decode("utf-8")
 #     self.accessKey = request.data["accessKey"]
