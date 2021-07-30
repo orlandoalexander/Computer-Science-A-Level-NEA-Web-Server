@@ -88,24 +88,24 @@ def uploadS3():
     #try:
     f = request.files["file"]
     full_filename = secure_filename(f.filename)
-    f.save("/tmp/0001")
+    f.save("/tmp/00011")
     #f.seek(0)
-    with open(f, 'r') as f_in:
-        for line in f_in:
-            tokens = line.split('\t')
-            # if len(tokens) < 2:
-            #    continue
-            bytes_part = ast.literal_eval(tokens[1])
-            content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
-    #content = f.read()
+#     with open(f, 'r') as f_in:
+#         for line in f_in:
+#             tokens = line.split('\t')
+#             # if len(tokens) < 2:
+#             #    continue
+#             bytes_part = ast.literal_eval(tokens[1])
+#             content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
+#     #content = f.read()
     #content = content.decode("utf-8")
-#     self.accessKey = request.data["accessKey"]
-#     self.secretKey = request.data["secretKey"]
-#     self.bucketName = request.data["bucketName"]
-#     self.s3File = request.data["s3File"]
-#     s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
-#     s3.upload_file(Filename=self.f, Bucket=self.bucketName, Key=self.s3File)
-    return content
+    self.accessKey = request.data["accessKey"]
+    self.secretKey = request.data["secretKey"]
+    self.bucketName = request.data["bucketName"]
+    self.s3File = request.data["s3File"]
+    s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
+    s3.upload_file(Filename="/tmp/00011", Bucket=self.bucketName, Key=self.s3File)
+    return "success"
     #return "success"
         #return "success"
     #except:
