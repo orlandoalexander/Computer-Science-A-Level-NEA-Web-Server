@@ -91,7 +91,7 @@ def uploadS3():
     f.save("/tmp/0001")
     f.seek(0)
     content = f.read()
-    content = str(content, "utf-8")
+    content = content.decode("utf-8")
 #     self.accessKey = request.data["accessKey"]
 #     self.secretKey = request.data["secretKey"]
 #     self.bucketName = request.data["bucketName"]
