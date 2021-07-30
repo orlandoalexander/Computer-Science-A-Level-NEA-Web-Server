@@ -99,14 +99,14 @@ def uploadS3():
 #             content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
 #     #content = f.read()
     #content = content.decode("utf-8")
-    #self.accessKey = request.data["accessKey"]
-    self.accessKey = "AKIASXUTHDSHWWJCOXW6"
-    #self.secretKey = request.data["secretKey"]
-    self.secretKey = "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"
-    #self.bucketName = request.data["bucketName"]
+    #accessKey = request.data["accessKey"]
+    accessKey = "AKIASXUTHDSHWWJCOXW6"
+    #secretKey = request.data["secretKey"]
+    secretKey = "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"
+    #bucketName = request.data["bucketName"]
     self.bucketName = "nea-audio-messages"
-    #self.s3File = request.data["s3File"]
-    self.s3file = "testFile"
+    #s3File = request.data["s3File"]
+    s3file = "testFile"
     s3 = boto3.client("s3", aws_access_key_id=self.accessKey, aws_secret_access_key=self.secretKey)
     s3.upload_file(Filename="/tmp/000111", Bucket=self.bucketName, Key=self.s3File)
     return "success"
