@@ -88,7 +88,7 @@ def uploadS3():
     #try:
     f = request.files["file"]
     full_filename = secure_filename(f.filename)
-    f.save("/tmp/0001111")
+    f.save("/tmp/00011111")
     #f.seek(0)
 #     with open(f, 'r') as f_in:
 #         for line in f_in:
@@ -106,9 +106,9 @@ def uploadS3():
     #bucketName = request.data["bucketName"]
     bucketName = "nea-audio-messages"
     #s3File = request.data["s3File"]
-    s3file = "testFile"
+    s3File = "testFile"
     s3 = boto3.client("s3", aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    s3.upload_file(Filename="/tmp/0001111", Bucket=bucketName, Key=s3File)
+    s3.upload_file(Filename="/tmp/00011111", Bucket=bucketName, Key=s3File)
     return "success"
     #return "success"
         #return "success"
