@@ -87,8 +87,9 @@ def view_audioMessages():
 def uploadS3():
     #try:
     f = request.files["file"]
-    full_filename = secure_filename(f.filename)
-    f.save("/tmp/000111111")
+    filename = secure_filename(f.filename)
+    full_filename = os.path.join("/tmp", filename)
+    f.save(os.path.join(full_filename)
     #f.seek(0)
 #     with open(f, 'r') as f_in:
 #         for line in f_in:
@@ -108,7 +109,7 @@ def uploadS3():
     #s3File = request.data["s3File"]
     s3File = "testFile"
     s3 = boto3.client("s3", aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    s3.upload_file(Filename="/tmp/000111111", Bucket=bucketName, Key=s3File)
+    s3.upload_file(Filename=full_filename, Bucket=bucketName, Key=s3File)
     return "success"
     #return "success"
         #return "success"
