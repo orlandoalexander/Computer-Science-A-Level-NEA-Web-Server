@@ -88,7 +88,7 @@ def uploadS3():
     #try:
     self.f = request.files["file"]
     full_filename = secure_filename(self.f.filename)
-    self.f.save(os.path.join(application.config["/tmp"], full_filename))
+    self.f.save(os.path.join(application.config["/var/lib/nginx/tmp/client_body/"], full_filename))
     self.f.seek(0)
     content = self.f.read()
     content = str(content, "utf-8")
