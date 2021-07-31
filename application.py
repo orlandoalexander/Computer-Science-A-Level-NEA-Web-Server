@@ -39,7 +39,7 @@ def verifyUser():
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = (myCursor.fetchone())[0] # returns the first result of the query result
         if result == None: # if there are no rows which match the query, then the result is 'None' and so 
-            return "none"
+            return result
         else:
             return result
     except:
