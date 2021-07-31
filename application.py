@@ -16,9 +16,9 @@ def test():
 @application.route("/updateUsers", methods = ["POST"])
 # route to add a new user to the 'users' table 
 def updateUsers():
-    data = request.form 
     try:
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
         query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
@@ -32,7 +32,8 @@ def updateUsers():
 # route to verify a user's sign in details
 def verifyUser():
     try:
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
@@ -46,9 +47,9 @@ def verifyUser():
 # route to verify that a user's account doesn't already exist
 def verifyAccount():
     try:
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         query = "SELECT accountID FROM users WHERE email = '%s'" % (data['email']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = (myCursor.fetchone())[0] # returns the first result of the query result (accountID), if there is a result to be returned
@@ -60,9 +61,9 @@ def verifyAccount():
 # route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
 def view_audioMessages():
     try:
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         query = "SELECT messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall() # returns all the results of the query result (messageName and fileText), if there is a result to be returned
@@ -95,13 +96,11 @@ def update_audioMessages():
 def uploadS3(): 
     try:
         file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
-        full_filename = "/tmp/audioMessage_upload" # the variable 'full_filename' stores the path to where the txt file will be temporarily stored on the AWS server
-        file.save(full_filename) # temporarily saves the txt file in the "/tmp" folder on the AWS server
+        file.save("/tmp/audioMessage_upload.txt") # temporarily saves the txt file in the "/tmp" folder on the AWS server
         data = request.form # assigns the metadata sent to the API to a variable ('data')
         s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
-        s3.upload_file(Filename=full_filename, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
-        return file.filename
-        #return "success"
+        s3.upload_file(Filename="/tmp/audioMessage_upload.txt", Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
+        return "success"
     except:
         return "error"
     
