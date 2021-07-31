@@ -14,7 +14,7 @@ def test():
     return "Working" # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed 
 
 @application.route("/updateUsers", methods = ["POST"])
-# route to modify the 'users' table
+# route to add a new user to the 'users' table 
 def updateUsers():
     data = request.form 
     try:
@@ -90,6 +90,7 @@ def uploadS3():
        #return "error"
         
 @application.route("/update_audioMessages", methods = ["POST"])
+# route to add data about a new audio message to the 'audioMessages' table
 def update_audioMessages():
     try:
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
