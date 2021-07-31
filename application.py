@@ -107,7 +107,7 @@ def uploadS3():
     
 @application.route("/downloadS3", methods = ["POST"])
 # route to download byte data of the user's personalised audio messages
-def uploadS3(): 
+def downloadS3(): 
     #try:
     data = request.form # assigns the metadata sent to the API to a variable ('data')
     s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
