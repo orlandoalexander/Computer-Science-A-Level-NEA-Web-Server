@@ -93,7 +93,7 @@ def uploadS3():
     accessKey = "AKIASXUTHDSHWWJCOXW6"
     #secretKey = request.data["secretKey"]
     secretKey = "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"
-    test = request.data["bucketName"]
+    test = request.form["bucketName"]
     bucketName = "nea-audio-messages"
     #s3File = request.data["s3File"]
     s3File = "testFile"
