@@ -37,13 +37,10 @@ def verifyUser():
         data = request.form # assigns the data sent to the API to a variable ('data')
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        result = (myCursor.fetchone())[0] # returns the first result of the query result
-        if result == None: # if there are no rows which match the query, then the result is 'None' and so 
-            return result
-        else:
-            return result
+        result = (myCursor.fetchone())[0] # returns the first result of the query result (accountID), if there is a result to be returned
+        return result # the accountID of the account matching the details inputted by the user is returned 
     except:
-        return "error"
+        return "none" # the string 'none' is returned if the user's inputted details do not match an account stored in the 'users' MySQL table
     
 @application.route("/verifyAccount", methods = ["POST"])
 # route to verify that a user's account doesn't already exist
@@ -52,15 +49,12 @@ def verifyAccount():
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "SELECT accountID FROM users WHERE email = '%s'" % (data['email'])
-        myCursor.execute(query)
-        result = (myCursor.fetchone())[0]
-        if result == None:
-            return "none"
-        else:
-            return "exists"
+        query = "SELECT accountID FROM users WHERE email = '%s'" % (data['email']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = (myCursor.fetchone())[0] # returns the first result of the query result (accountID), if there is a result to be returned
+        return "exists" # the string 'exists' is returned if the user's inputted details match an account which already exists in the 'users' MySQL table
     except:
-        return "error"
+        return "notExists" # the string 'notExists' is returned if the user's inputted details do not match an account which already exists in the 'users' MySQL table
     
 @application.route("/view_audioMessages", methods = ["POST"])
 # route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
@@ -69,14 +63,14 @@ def view_audioMessages():
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "SELECT messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
-        myCursor.execute(query)
-        result = myCursor.fetchall()
-        result_dict = dict()
-        result_dict["length"] = len(result)
+        query = "SELECT messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = myCursor.fetchall() # returns all the results of the query result (messageName and fileText), if there is a result to be returned
+        result_dict = dict() # creates a dictionary to store the results from the executed query
+        result_dict["length"] = len(result) # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
-            result_dict[str(result.index(i))] = i
-        return jsonify(result_dict)
+            result_dict[str(result.index(i))] = i # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value 
+        return jsonify(result_dict) # returns a jsonfied object of the results dictionary using the method 'jsonify'
     except:
         return "error"
     
@@ -97,20 +91,19 @@ def uploadS3():
         
 @application.route("/update_audioMessages", methods = ["POST"])
 def update_audioMessages():
-    #try:
-    mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
-    data = request.form # assigns the data sent to the API to a variable ('data')
-    query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])
-    myCursor.execute(query)
-    mydb.commit() # commits the changes to the MySQL database made by the executed query
-    return "db"
-        #return "success"
-    #except:
-        #return "error"
+    try:
+        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        mydb.commit() # commits the changes to the MySQL database made by the executed query
+        return "success"
+    except:
+        return "error"
         
         
-            
+        
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
