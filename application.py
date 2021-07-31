@@ -111,10 +111,9 @@ def downloadS3():
     data = request.form # assigns the metadata sent to the API to a variable ('data')
     s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
     s3.download_file(Filename="/tmp/audioMessage_download.txt", Bucket=data["bucketName"], Key=data["s3File"]) # downloads the txt file with the name equal to the concerned messageID from the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is downloaded and stored temporarily on the AWS server
-    with open("/tmp/audioMessage_download.txt", 'r') as file:
-        file.seek(0)
-        fileContent = file.read()
-    return fileContent
+    file = open("/tmp/audioMessage_download.txt", 'r') 
+        
+    return file
     #return "success"
     #except:
         #return "error"
