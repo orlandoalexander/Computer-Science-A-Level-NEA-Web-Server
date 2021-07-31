@@ -104,13 +104,13 @@ def uploadS3():
     accessKey = "AKIASXUTHDSHWWJCOXW6"
     #secretKey = request.data["secretKey"]
     secretKey = "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"
-    #bucketName = request.data["bucketName"]
+    test = request.data["bucketName"]
     bucketName = "nea-audio-messages"
     #s3File = request.data["s3File"]
     s3File = "testFile"
     s3 = boto3.client("s3", aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
     s3.upload_file(Filename=full_filename, Bucket=bucketName, Key=s3File)
-    return "success"
+    return test
     #return "success"
         #return "success"
     #except:
