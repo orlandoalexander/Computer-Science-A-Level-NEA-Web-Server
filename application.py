@@ -85,35 +85,24 @@ def view_audioMessages():
 @application.route("/uploadS3", methods = ["POST"])
 # route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
 def uploadS3():
-    #try:
     f = request.files["file"]
     filename = secure_filename(f.filename)
     full_filename = os.path.join("/tmp", filename)
-    f.save(os.path.join(full_filename)
-    #f.seek(0)
-#     with open(f, 'r') as f_in:
-#         for line in f_in:
-#             tokens = line.split('\t')
-#             # if len(tokens) < 2:
-#             #    continue
-#             bytes_part = ast.literal_eval(tokens[1])
-#             content = bytes_part.decode('utf-8')  # Decode the bytes to convert to a string
-#     #content = f.read()
-    #content = content.decode("utf-8")
+    f.save(os.path.join(full_filename))
     #accessKey = request.data["accessKey"]
     accessKey = "AKIASXUTHDSHWWJCOXW6"
-   #secretKey = request.data["secretKey"]
+    #secretKey = request.data["secretKey"]
     secretKey = "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"
     test = request.data["bucketName"]
     bucketName = "nea-audio-messages"
-   #s3File = request.data["s3File"]
+    #s3File = request.data["s3File"]
     s3File = "testFile"
     s3 = boto3.client("s3", aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
     s3.upload_file(Filename=full_filename, Bucket=bucketName, Key=s3File)
     return test
-   #return "success"
+    #return "success"
        #return "success"
-   #except:
+    #except:
        #return "error"
         
 @application.route("/update_audioMessages", methods = ["POST"])
