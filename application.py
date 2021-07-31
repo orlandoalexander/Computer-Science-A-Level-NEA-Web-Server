@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from flask_restful import Api
 import mysql.connector
 import boto3
-from werkzeug.utils import secure_filename
 import os.path
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
@@ -20,10 +19,10 @@ def updateUsers():
     data = request.form 
     try:
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
         query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
-        mycursor.execute(query) # executes the query in the MySQL database
+        myCursor.execute(query) # executes the query in the MySQL database
         mydb.commit() # commits the changes to the MySQL database made by the executed query
         return "success" # confirms that MySQL database was successfully updated
     except:
@@ -34,12 +33,12 @@ def updateUsers():
 def verifyUser():
     try:
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])
-        mycursor.execute(query)
-        result = (mycursor.fetchone())[0]
-        if result == None:
+        query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = (myCursor.fetchone())[0] # returns the first result of the query result
+        if result == None: # if there are no rows which match the query, then the result is 'None' and so 
             return "none"
         else:
             return result
@@ -51,11 +50,11 @@ def verifyUser():
 def verifyAccount():
     try:
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
         query = "SELECT accountID FROM users WHERE email = '%s'" % (data['email'])
-        mycursor.execute(query)
-        result = (mycursor.fetchone())[0]
+        myCursor.execute(query)
+        result = (myCursor.fetchone())[0]
         if result == None:
             return "none"
         else:
@@ -68,11 +67,11 @@ def verifyAccount():
 def view_audioMessages():
     try:
         mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+        myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
         query = "SELECT messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
-        mycursor.execute(query)
-        result = mycursor.fetchall()
+        myCursor.execute(query)
+        result = myCursor.fetchall()
         result_dict = dict()
         result_dict["length"] = len(result)
         for i in result:
@@ -83,25 +82,16 @@ def view_audioMessages():
     
     
 @application.route("/uploadS3", methods = ["POST"])
-# route to determine how many audio messages a particular user has and what the display names are and file details are for these messages
-def uploadS3():
-    f = request.files["file"]
-    filename = secure_filename(f.filename)
-    full_filename = os.path.join("/tmp", filename)
-    f.save(os.path.join(full_filename))
-    #accessKey = request.data["accessKey"]
-    accessKey = "AKIASXUTHDSHWWJCOXW6"
-    #secretKey = request.data["secretKey"]
-    secretKey = "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"
-    test = request.form["bucketName"]
-    bucketName = "nea-audio-messages"
-    #s3File = request.data["s3File"]
-    s3File = "testFile"
-    s3 = boto3.client("s3", aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    s3.upload_file(Filename=full_filename, Bucket=bucketName, Key=s3File)
-    return test
+# route to upload byte data of the user's personalised audio messages
+def uploadS3(): 
+    file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
+    full_filename = os.path.join("/tmp", file.filename) # the variable 'full_filename' stores the path to where the txt file will be temporarily stored on the AWS server
+    file.save(os.path.join(full_filename)) # temporarily saves the txt file in the "/tmp" folder on the AWS server
+    data = request.form # assigns the metadata sent to the API to a variable ('data')
+    s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
+    s3.upload_file(Filename=full_filename, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
+    return file.filename
     #return "success"
-       #return "success"
     #except:
        #return "error"
         
@@ -109,10 +99,10 @@ def uploadS3():
 def update_audioMessages():
     #try:
     mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    mycursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
+    myCursor = mydb.cursor()  # initialises a cursor which allows you to communicate with mydb (MySQL database)
     data = request.form # assigns the data sent to the API to a variable ('data')
     query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])
-    mycursor.execute(query)
+    myCursor.execute(query)
     mydb.commit() # commits the changes to the MySQL database made by the executed query
     return "db"
         #return "success"
