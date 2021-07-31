@@ -75,20 +75,6 @@ def view_audioMessages():
         return "error"
     
     
-@application.route("/uploadS3", methods = ["POST"])
-# route to upload byte data of the user's personalised audio messages
-def uploadS3(): 
-    file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
-    full_filename = os.path.join("/tmp", file.filename) # the variable 'full_filename' stores the path to where the txt file will be temporarily stored on the AWS server
-    file.save(os.path.join(full_filename)) # temporarily saves the txt file in the "/tmp" folder on the AWS server
-    data = request.form # assigns the metadata sent to the API to a variable ('data')
-    s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
-    s3.upload_file(Filename=full_filename, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
-    return file.filename
-    #return "success"
-    #except:
-       #return "error"
-        
 @application.route("/update_audioMessages", methods = ["POST"])
 # route to add data about a new audio message to the 'audioMessages' table
 def update_audioMessages():
@@ -102,7 +88,22 @@ def update_audioMessages():
         return "success"
     except:
         return "error"
-        
+    
+    
+@application.route("/uploadS3", methods = ["POST"])
+# route to upload byte data of the user's personalised audio messages
+def uploadS3(): 
+    file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
+    full_filename = os.path.join("/tmp", file.filename) # the variable 'full_filename' stores the path to where the txt file will be temporarily stored on the AWS server
+    file.save(os.path.join(full_filename)) # temporarily saves the txt file in the "/tmp" folder on the AWS server
+    data = request.form # assigns the metadata sent to the API to a variable ('data')
+    s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
+    s3.upload_file(Filename=full_filename, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
+    return file.filename
+    #return "success"
+    #except:
+       #return "error"
+              
         
         
 
