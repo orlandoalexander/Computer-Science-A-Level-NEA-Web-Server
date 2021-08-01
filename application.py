@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_restful import Api
 import mysql.connector
 import boto3
@@ -108,9 +108,9 @@ def verify_messageName():
 # route to add data about a new audio message to the 'audioMessages' table
 def update_audioMessages():
     try:
-        mydb = mysql.connector.connect(host=(request.form["host"]), user=(request.form["user"]), passwd=(request.form["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
@@ -123,12 +123,25 @@ def update_audioMessages():
 # route to upload byte data of the user's personalised audio messages
 def uploadS3(): 
     try:
-        file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
-        file.save("/tmp/audioMessage_upload.txt") # temporarily saves the txt file in the "/tmp" folder on the AWS server
         data = request.form # assigns the metadata sent to the API to a variable ('data')
+        file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
+        fileName = "/tmp/audioMessage_upload.txt"
+        file.save(fileName) # temporarily saves the txt file in the "/tmp" folder on the AWS server
         s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
-        s3.upload_file(Filename="/tmp/audioMessage_upload.txt", Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
+        s3.upload_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
         return "success"
+    except:
+        return "error"
+    
+@application.route("/downloadTxt", methods = ["POST"])
+# route to upload byte data of the user's personalised audio messages
+def downloadTxt(): 
+    try:
+        data = request.form # assigns the metadata sent to the API to a variable ('data')
+        fileName = "/tmp/audioMessage_download.txt"
+        s3 = boto3.client("s3", aws_access_key_id=data["accessKey"], aws_secret_access_key=data["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
+        s3.download_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"])  # downloads the txt file with the name equal to the concerned messageID from the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is downloaded and stored temporarily on the AWS server
+        return send_file(fileName)
     except:
         return "error"
         
