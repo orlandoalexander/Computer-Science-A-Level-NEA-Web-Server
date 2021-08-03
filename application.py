@@ -121,6 +121,19 @@ def update_audioMessages():
     except:
         return "error"
     
+@application.route("/delete_audioMessages", method = ["POST"])
+def delete_audioMessages():
+    try:
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+        query = "DELETE FROM audioMessages WHERE messageID = '%s'" % (data['messageID'])
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        mydb.commit() # commits the changes to the MySQL database made by the executed query
+        return "success"
+    except:
+        return "error"
+    
     
 @application.route("/uploadS3", methods = ["POST"])
 # route to upload byte data of the user's personalised audio messages
