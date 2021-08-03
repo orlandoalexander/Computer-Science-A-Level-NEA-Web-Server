@@ -64,7 +64,7 @@ def view_audioMessages():
         data = request.form # assigns the data sent to the API to a variable ('data')
         mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
-        query = "SELECT messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        query = "SELECT messageID, messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall() # returns all the results of the query result (messageName and fileText), if there is a result to be returned
         result_dict = dict() # creates a dictionary to store the results from the executed query
