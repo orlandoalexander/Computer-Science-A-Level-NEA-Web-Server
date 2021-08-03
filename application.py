@@ -121,7 +121,7 @@ def update_audioMessages():
     except:
         return "error"
     
-@application.route("/delete_audioMessages", method = ["POST"])
+@application.route("/delete_audioMessages", methods = ["POST"])
 def delete_audioMessages():
     try:
         data = request.form # assigns the data sent to the API to a variable ('data')
