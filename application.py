@@ -112,7 +112,7 @@ def update_audioMessages():
         mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         if data["initialCreation"] == "False":
-            query = "UPDATE audioMessages SET messageName = '%s' WHERE messageID = '%s'" % (data['messageName'], data['messageID'])
+            query = "UPDATE audioMessages SET messageName = '%s', fileText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['fileText'], data['messageID'])
         else:
             query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -120,6 +120,7 @@ def update_audioMessages():
         return "success"
     except:
         return "error"
+    
     
 @application.route("/delete_audioMessages", methods = ["POST"])
 def delete_audioMessages():
