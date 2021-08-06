@@ -161,6 +161,22 @@ def downloadTxt():
         return send_file(fileName, as_attachment = True)
     except:
         return "error"
+    
+    
+@application.route("/verify_faceID", methods = ["POST"])
+# route to check that a generated faceID is not already in use
+def verify_faceID():
+    try:
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+        query = "SELECT faceID FROM knownFaces WHERE faceID = '%s'" % (data['faceID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = (myCursor.fetchone()[0]) # returns the first result of the query result (accountID), if there is a result to be returned
+        return "exists" # the string 'exists' is returned if the messageID generated is already used by another audio message in the 'audioMessages' table
+    except:
+        return "notExists" # the string 'notExists' is returned if the messageID generated is not already used by another audio message in the 'audioMessages' table
+ 
         
         
 
