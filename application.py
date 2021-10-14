@@ -16,20 +16,20 @@ def test():
 @application.route("/updateUsers", methods = ["POST"])
 # route to add a new user to the 'users' table 
 def updateUsers():
-    try:
-        data = request.form # assigns the data sent to the API to a variable ('data')
-        import json
-        with open("passwds.json", "r") as json_file:
-            passwds = json.load(json_file)
-            print(passwds)
-        mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-        query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
-        myCursor.execute(query) # executes the query in the MySQL database
-        mydb.commit() # commits the changes to the MySQL database made by the executed query
-        return "success" # confirms that MySQL database was successfully updated
-    except:
-        return "error" # signifies that an error occured when adding the user's data in the 'users' table
+    #try:
+    data = request.form # assigns the data sent to the API to a variable ('data')
+    import json
+    with open("passwds.json", "r") as json_file:
+        passwds = json.load(json_file)
+        print(passwds)
+    mydb = mysql.connector.connect(host=(data["host"]), user=(data["user"]), passwd=(data["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
+    myCursor.execute(query) # executes the query in the MySQL database
+    mydb.commit() # commits the changes to the MySQL database made by the executed query
+    return "success" # confirms that MySQL database was successfully updated
+    #except:
+        #return "error" # signifies that an error occured when adding the user's data in the 'users' table
         
 @application.route("/verifyUser", methods = ["POST"])
 # route to verify a user's sign in details
