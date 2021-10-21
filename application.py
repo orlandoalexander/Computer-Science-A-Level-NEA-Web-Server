@@ -27,7 +27,7 @@ def updateUsers():
     query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
     myCursor.execute(query) # executes the query in the MySQL database
     mydb.commit() # commits the changes to the MySQL database made by the executed query
-    return "success" # confirms that MySQL database was successfully updated
+    return passwds# confirms that MySQL database was successfully updated
     #except:
         #return "error" # signifies that an error occured when adding the user's data in the 'users' table
         
