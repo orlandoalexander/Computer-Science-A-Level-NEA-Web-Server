@@ -12,7 +12,7 @@ api = Api(application)  # wrap 'application' variable in restful API
 # homepage route 
 def test():
     with open("/etc/passwds/passwds.txt", "r") as file:
-        passwds = file.readlines()
+        passwds = file.read()
 
     return passwds # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed 
 
