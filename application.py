@@ -11,7 +11,10 @@ api = Api(application)  # wrap 'application' variable in restful API
 @application.route("/") 
 # homepage route 
 def test():
-    return "Working" # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed 
+    with open("https://nea-passwds.s3.eu-west-2.amazonaws.com/passwds.json", "r") as file:
+        passwds = json.load(file)
+        
+    return passwds # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed 
 
 @application.route("/updateUsers", methods = ["POST"])
 # route to add a new user to the 'users' table 
