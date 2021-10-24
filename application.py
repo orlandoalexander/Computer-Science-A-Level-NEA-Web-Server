@@ -3,6 +3,7 @@ from flask_restful import Api
 import mysql.connector
 import boto3
 import pickle
+import json
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
@@ -12,8 +13,7 @@ api = Api(application)  # wrap 'application' variable in restful API
 # homepage route 
 def test():
     with open("/etc/passwds/passwds.txt", "r") as file:
-        passwds = file.read()
-        print(passwds)
+        passwds = josn.load(file)
 
     return passwds # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed 
 
