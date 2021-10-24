@@ -18,7 +18,7 @@ def test():
 # route to add a new user to the 'users' table 
 def updateUsers():
     try:
-        with open("/etc/passwds/passwds.json", "r") as file:
+        with open("/etc/keys/db.json", "r") as file:
             passwds = json.load(file)
         data = request.form # assigns the data sent to the API to a variable ('data')
         mydb = mysql.connector.connect(host=(passwds["host"]), user=(passwds["user"]), passwd=(passwds["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
