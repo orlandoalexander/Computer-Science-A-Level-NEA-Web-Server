@@ -191,7 +191,7 @@ def downloadTxt():
     except:
         return "error"
     
-@application.route("create_ID", methods = ["POST"])
+@application.route("/create_ID", methods = ["POST"])
 # route to create a unique faceID for the face captured
 def crate_faceID():
     while True:  # creates an infinite loop
