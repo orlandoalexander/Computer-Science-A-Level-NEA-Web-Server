@@ -252,8 +252,8 @@ def get_S3Key():
         fernet = Fernet(key) # instantiates Fernet encryption key using user's accountID as the encryption key
         accessKey_encoded = fernet.encrypt(keys_S3["accessKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
         secretKey_encoded = fernet.encrypt(keys_S3["secretKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        encodedKeys_dict = {"accessKey_encoded": accessKey_encoded.decode(), "secretKey_encoded": secretKey_encoded.decode()}
-        return jsonify(encodedKeys_dict)
+        encodedKeys_dict = {"accessKey_encoded": accessKey_encoded.decode(), "secretKey_encoded": secretKey_encoded.decode()} # keys must be decoded to be jsonified and sent over API
+        return encodedKeys_dict
     else:
         return "error"
 
