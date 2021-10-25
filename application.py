@@ -6,7 +6,7 @@ import pickle
 import json
 import random
 import string
-from cryprography.fernet import Fernet
+from cryptography.fernet import Fernet
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
