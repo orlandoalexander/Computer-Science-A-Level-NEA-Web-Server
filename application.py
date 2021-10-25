@@ -205,14 +205,17 @@ def crate_faceID():
     while True:  # creates an infinite loop
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits  # creates a concatenated string of all the uppercase and lowercase alphabetic characters and all the digits (0-9)
         ID = ''.join(random.choice(chars) for i in range(16))  # the 'random' module randomly selects 16 characters from the string 'chars' to form the unique messageID
-        query = "SELECT EXISTS(SELECT * FROM '%s' WHERE '%s' = '%s')" % (data["db"], data["field"], ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        if data["field"] == "visitID":
+            query = "SELECT EXISTS(SELECT * FROM visitorLog WHERE visitID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        else:
+            query = "SELECT EXISTS(SELECT * FROM knownFaces WHERE faceID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = (myCursor.fetchone()[0])  # returns the first result of the query result (accountID), if there is a result to be returned
         if result == 0:
             break
     return ID
 
-        
+
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
