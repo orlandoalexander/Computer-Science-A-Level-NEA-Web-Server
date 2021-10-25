@@ -236,16 +236,18 @@ def crate_faceID():
 @application.route("/get_S3Key", methods = ["POST"])
 def get_S3Key():
     data = request.form
+    with open("/etc/keys/db.json", "r") as file:
+        keys_db = json.load(file)
     with open("/etc/keys/S3.json", "r") as file:
-        keys = json.load(file)
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+        keys_S3 = json.load(file)
+    mydb = mysql.connector.connect(host=(keys_db["host"]), user=(keys_db["user"]), passwd=(keys_db["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
     result = myCursor.fetchone()[0]
     if result != 0:
-        return {"accessKey": keys["accessKey"], "secretKey": keys["secretKey"]}
+        return {"accessKey": keys_S3["accessKey"], "secretKey": keys_S3["secretKey"]}
     else:
         return "error"
 
