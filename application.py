@@ -188,7 +188,10 @@ def update_knownFaces():
         mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-        query = "INSERT INTO knownFaces (faceID, faceName, accountID) VALUES ('%s', '%s', '%s')" % (data['faceID'], data['faceName'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        if data['faceName'] == None: # if this is the first time the record with this faceID has been added to the database (from the raspberry pi)
+            query = "INSERT INTO knownFaces (faceID, faceName, accountID) VALUES ('%s', '%s', '%s')" % (data['faceID'], data['faceName'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        else: # called when the user has entered the name for the faceID value and wants to store this value
+            query = "INSERT INTO knownFaces(faceName) VALUES ('%s') WHERE faceID = '%s'" % (data['faceName'], data['faceID'])
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
         return "success"
