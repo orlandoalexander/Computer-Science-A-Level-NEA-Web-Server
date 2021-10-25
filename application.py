@@ -247,7 +247,9 @@ def get_S3Key():
     myCursor.execute(query)
     result = myCursor.fetchone()[0]
     if result != 0:
-        return {"accessKey": keys_S3["accessKey"], "secretKey": keys_S3["secretKey"]}
+        accessKey_encoded = (hashlib.new("sha3_256", keys_S3["accessKey"].encode())).hexdigest()
+        secretKey_encoded = (hashlib.new("sha3_256", keys_S3["secretKey"].encode())).hexdigest()
+        return {"accessKey_encoded": accessKey_encoded, "secretKey_encoded": secretKey_encoded}
     else:
         return "error"
 
