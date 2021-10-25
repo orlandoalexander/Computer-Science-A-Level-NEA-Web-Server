@@ -86,7 +86,7 @@ def view_audioMessages():
         result_dict = dict() # creates a dictionary to store the results from the executed query
         result_dict["length"] = len(result) # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
-            result_dict[str(result.index(i))] = i # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value 
+            result_dict[str(result.index(i))] = i # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
         return jsonify(result_dict) # returns a jsonfied object of the results dictionary using the method 'jsonify'
     except:
         return "error"
@@ -252,7 +252,8 @@ def get_S3Key():
         fernet = Fernet(key) # instantiates Fernet encryption key using user's accountID as the encryption key
         accessKey_encoded = fernet.encrypt(keys_S3["accessKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
         secretKey_encoded = fernet.encrypt(keys_S3["secretKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        return '{"accessKey_encoded": accessKey_encoded, "secretKey_encoded": secretKey_encoded}'
+        encodedKeys_dict = {"accessKey_encoded": accessKey_encoded, "secretKey_encoded": secretKey_encoded}
+        return jsonify(encodedKeys_dict)
     else:
         return "error"
 
