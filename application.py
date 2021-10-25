@@ -214,7 +214,7 @@ def downloadTxt():
     
 @application.route("/create_ID", methods = ["POST"])
 # route to create a unique faceID for the face captured
-def crate_faceID():
+def create_faceID():
     data = request.form
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -223,7 +223,7 @@ def crate_faceID():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     while True:  # creates an infinite loop
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits  # creates a concatenated string of all the uppercase and lowercase alphabetic characters and all the digits (0-9)
-        ID = ((''.join(random.choice(chars) for i in range(43)))+'=').encode()  # unique message ID is compatible format for fernet encryption
+        ID = (''.join(random.choice(chars) for i in range(43)))+'=' # unique message ID is compatible format for fernet encryption
         if data["field"] == "visitID":
             query = "SELECT EXISTS(SELECT * FROM visitorLog WHERE visitID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         else:
