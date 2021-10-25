@@ -190,7 +190,7 @@ def update_knownFaces():
     if data['faceName'] == "": # if this is the first time the record with this faceID has been added to the database (from the raspberry pi)
         query = "INSERT INTO knownFaces (faceID, faceName, accountID) VALUES ('%s', '%s', '%s')" % (data['faceID'], data['faceName'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     else: # called when the user has entered the name for the faceID value and wants to store this value
-        query = "INSERT INTO knownFaces(faceName) VALUES ('%s') WHERE faceID = '%s'" % (data['faceName'], data['faceID'])
+        query = "UPDATE knownFaces SET faceName = '%s' WHERE faceID = '%s'" % (data['faceName'], data['faceID'])
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     mydb.commit() # commits the changes to the MySQL database made by the executed query
     return "success"
