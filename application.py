@@ -248,7 +248,7 @@ def get_S3Key():
     myCursor.execute(query)
     result = myCursor.fetchone()[0]
     if result != 0:
-        key = data["accountID"]
+        key = data["accountID"].encode() # key must be encoded as bytes
         fernet = Fernet(key) # instantiates Fernet encryption key using user's accountID as the encryption key
         accessKey_encoded = fernet.encrypt(keys_S3["accessKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
         secretKey_encoded = fernet.encrypt(keys_S3["secretKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
