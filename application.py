@@ -6,6 +6,7 @@ import pickle
 import json
 import random
 import string
+import hashlib
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
