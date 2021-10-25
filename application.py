@@ -174,8 +174,9 @@ def view_visitorLog():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT imageTimestamp, faceID FROM visitorLog WHERE visitID = '%s'" % (data["visitID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchone()[0]  # returns the first result of the query result (accountID), if there is a result to be returned
-    return result
+    result = myCursor.fetchone()
+    print(result)
+    return jsonify(result)
 
 
 @application.route("/update_knownFaces", methods = ["POST"])
