@@ -189,7 +189,7 @@ def uploadS3():
             keys = json.load(file)
         data = request.form # assigns the metadata sent to the API to a variable ('data')
         file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
-        fileName = "/tmp/uploadFile.png"
+        fileName = "/tmp/uploadFile.pkl"
         file.save(fileName) # temporarily saves the txt file in the "/tmp" folder on the AWS server
         s3 = boto3.client("s3", aws_access_key_id=keys["accessKey"], aws_secret_access_key=keys["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
         s3.upload_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
@@ -228,12 +228,26 @@ def crate_faceID():
         else:
             query = "SELECT EXISTS(SELECT * FROM knownFaces WHERE faceID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        result = (myCursor.fetchone()[0])  # returns the first result of the query result (accountID), if there is a result to be returned
+        result = myCursor.fetchone()[0]  # returns the first result of the query result (accountID), if there is a result to be returned
         if result == 0:
             break
     return ID
 
-
+@application.route("/get_S3Key", methods = ["POST"])
+def get_S3Key():
+    data = request.form
+    with open("/etc/keys/S3.json", "r") as file:
+        keys = json.load(file)
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
+    myCursor.execute(query)
+    result = myCursor.fetchone()[0]
+    if result != 0:
+        return {"accessKey": keys["accessKey"], "secretKey": keys["secretKey"]}
+    else:
+        return "error"
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
