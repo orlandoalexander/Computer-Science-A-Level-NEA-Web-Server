@@ -196,6 +196,11 @@ def downloadTxt():
 @application.route("/create_ID", methods = ["POST"])
 # route to create a unique faceID for the face captured
 def crate_faceID():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     while True:  # creates an infinite loop
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits  # creates a concatenated string of all the uppercase and lowercase alphabetic characters and all the digits (0-9)
         ID = ''.join(random.choice(chars) for i in range(16))  # the 'random' module randomly selects 16 characters from the string 'chars' to form the unique messageID
