@@ -164,6 +164,20 @@ def update_visitorLog():
     except:
         return "error"
 
+
+@application.route("/view_visitorLog", methods = ["POST"])
+def view_visitorLog():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT (imageTimestamp, faceID) FROM visitorLog WHERE visitID = '%s'" % (data["visitID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
+    return result
+
 @application.route("/update_knownFaces", methods = ["POST"])
 # route to add data about a new audio message to the 'audioMessages' table
 def update_knownFaces():
