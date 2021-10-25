@@ -175,7 +175,6 @@ def view_visitorLog():
     query = "SELECT imageTimestamp, faceID FROM visitorLog WHERE visitID = '%s'" % (data["visitID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
-    print(result)
     return jsonify(result)
 
 
@@ -206,7 +205,7 @@ def view_knownFaces():
     query = "SELECT faceName FROM knownFaces WHERE faceID = '%s'" % (data["faceID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
-    return result
+    return jsonify(result)
     
 @application.route("/delete_audioMessages", methods = ["POST"])
 def delete_audioMessages():
