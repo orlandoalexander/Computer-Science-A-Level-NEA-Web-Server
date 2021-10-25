@@ -189,7 +189,7 @@ def uploadS3():
             keys = json.load(file)
         data = request.form # assigns the metadata sent to the API to a variable ('data')
         file = request.files["file"] # assigns the txt file storing the bytes of the audio message to the variable 'file'
-        fileName = "/tmp/uploadFile.pkl"
+        fileName = "/tmp/uploadFile.png"
         file.save(fileName) # temporarily saves the txt file in the "/tmp" folder on the AWS server
         s3 = boto3.client("s3", aws_access_key_id=keys["accessKey"], aws_secret_access_key=keys["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
         s3.upload_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"]) # uploads the txt file to the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is stored on S3 is the 'messageID' of the audio message which is being stored as a txt file.
