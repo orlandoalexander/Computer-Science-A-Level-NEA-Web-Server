@@ -246,7 +246,7 @@ def get_S3Key():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
-    result = myCursor.fetchone()[0]
+    result = myCursor.fetchone()
     if result != 0:
         key = data["accountID"].encode() # key must be encoded as bytes
         fernet = Fernet(key) # instantiates Fernet encryption key using user's accountID as the encryption key
