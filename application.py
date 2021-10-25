@@ -6,7 +6,7 @@ import pickle
 import json
 import random
 import string
-import hashlib
+from cryprography.fernet import Fernet
 
 application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
 api = Api(application)  # wrap 'application' variable in restful API
@@ -248,8 +248,10 @@ def get_S3Key():
     myCursor.execute(query)
     result = myCursor.fetchone()[0]
     if result != 0:
-        accessKey_encoded = (hashlib.new("sha3_256", keys_S3["accessKey"].encode())).hexdigest()
-        secretKey_encoded = (hashlib.new("sha3_256", keys_S3["secretKey"].encode())).hexdigest()
+        key = data["accountID"]
+        fernet = Fernet(key) # instantiates Fernet encryption key using user's accountID as the encryption key
+        accessKey_encoded = fernet.encrypt(keys_S3["accessKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
+        secretKey_encoded = fernet.encrypt(keys_S3["secretKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
         return {"accessKey_encoded": accessKey_encoded, "secretKey_encoded": secretKey_encoded}
     else:
         return "error"
