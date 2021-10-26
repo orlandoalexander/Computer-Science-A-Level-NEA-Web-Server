@@ -272,7 +272,7 @@ def create_faceID():
         ID = (''.join(random.choice(chars) for i in range(43)))+'=' # unique message ID is compatible format for fernet encryption
         if data["field"] == "visitID":
             query = "SELECT EXISTS(SELECT * FROM visitorLog WHERE visitID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
-        if data["field"] == "accountID":
+        elif data["field"] == "accountID":
             query = "SELECT EXISTS(SELECT * FROM users WHERE accountID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         else:
             query = "SELECT EXISTS(SELECT * FROM knownFaces WHERE faceID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
