@@ -80,9 +80,9 @@ def view_audioMessages():
         mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
-        query = "SELECT messageID, messageName, fileText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        result = myCursor.fetchall() # returns all the results of the query result (messageName and fileText), if there is a result to be returned
+        result = myCursor.fetchall() # returns all the results of the query result (messageName and messageText), if there is a result to be returned
         result_dict = dict() # creates a dictionary to store the results from the executed query
         result_dict["length"] = len(result) # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
@@ -137,9 +137,9 @@ def update_audioMessages():
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         if data["initialCreation"] == "False":
-            query = "UPDATE audioMessages SET messageName = '%s', fileText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['fileText'], data['messageID'])
+            query = "UPDATE audioMessages SET messageName = '%s', messageText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['messageText'], data['messageID'])
         else:
-            query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+            query = "INSERT INTO audioMessages (messageID, messageName, messageText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['messageText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
         return "success"
