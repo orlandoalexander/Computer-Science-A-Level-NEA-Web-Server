@@ -305,6 +305,32 @@ def get_S3Key():
     else:
         return "error"
 
+
+@application.route("/MQTT_ring", methods = ["POST"])
+def init():
+    client = mqtt.Client()
+    client.username_pw_set(username="yrczhohs", password="qPSwbxPDQHEI")
+    client.on_connect = on_connect  # creates callback for successful connection with broker
+    client.connect("hairdresser.cloudmqtt.com", 18973)  # parameters for broker web address and port number
+    client.loop_start()  # creates thread which runs parallel to main thread
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0: # if connection is successful
+        client.subscribe("ring/CYxBRru8w4euMX1cPwgoZatC2LXdNzWjSnPZgdwpuUX=")
+        client.message_callback_add("ring/CYxBRru8w4euMX1cPwgoZatC2LXdNzWjSnPZgdwpuUX=", on_message_ring)
+    else:
+        # attempts to reconnect
+        client.on_connect = on_connect
+        client.username_pw_set(username="yrczhohs", password = "qPSwbxPDQHEI")
+        client.connect("hairdresser.cloudmqtt.com", 18973)
+
+def on_message_ring(client, userdata, msg):
+    return "success"
+
+
+
+
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
 
