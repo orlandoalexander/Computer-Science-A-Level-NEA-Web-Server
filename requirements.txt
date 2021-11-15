@@ -9,4 +9,3 @@ requests==2.26.0
 mysql-connector==2.2.9
 boto3==1.18.6	
 cryptography==35.0.0
-paho-mqtt==1.6.1
