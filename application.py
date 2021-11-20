@@ -129,22 +129,22 @@ def verify_messageName():
 @application.route("/update_audioMessages", methods = ["POST"])
 # route to add data about a new audio message to the 'audioMessages' table
 def update_audioMessages():
-    try:
-        with open("/etc/keys/db.json", "r") as file:
-            keys = json.load(file)
-        data = request.form # assigns the data sent to the API to a variable ('data')
-        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
-                                       database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-        if data["initialCreation"] == "False":
-            query = "UPDATE audioMessages SET messageName = '%s', messageText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['messageText'], data['messageID'])
-        else:
-            query = "INSERT INTO audioMessages (messageID, messageName, messageText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['messageText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
-        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        mydb.commit() # commits the changes to the MySQL database made by the executed query
-        return "success"
-    except:
-        return "error"
+  #  try:
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    if data["initialCreation"] == "False":
+        query = "UPDATE audioMessages SET messageName = '%s', messageText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['messageText'], data['messageID'])
+    else:
+        query = "INSERT INTO audioMessages (messageID, messageName, messageText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['messageText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+    myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    mydb.commit() # commits the changes to the MySQL database made by the executed query
+    return "success"
+  #  except:
+        #return "error"
 
 
 @application.route("/update_visitorLog", methods = ["POST"])
