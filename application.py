@@ -136,7 +136,7 @@ def update_audioMessages():
     mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    if data["initialCreation"] == "False":
+    if data['initialCreation'] == "False":
         query = "UPDATE audioMessages SET messageName = '%s', messageText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['messageText'], data['messageID'])
     else:
         query = "INSERT INTO audioMessages (messageID, messageName, messageText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['messageText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
