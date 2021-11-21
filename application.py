@@ -91,6 +91,7 @@ def view_audioMessages():
     except:
         return "error"
     
+    
 @application.route("/verify_messageID", methods = ["POST"])
 # route to check whether the messageID that has been generated for an audio message does not already exist
 def verify_messageID():
@@ -176,6 +177,19 @@ def view_visitorLog():
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
     return jsonify(result)
+
+@application.route("/latest_visitorLog", methods = ["POST"])
+def view_visitorLog():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT faceID, confidence FROM visitorLog ORDER BY imageTimestamp DESC")
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()
+    return jsonify(result)
+
 
 
 @application.route("/update_knownFaces", methods = ["POST"])
