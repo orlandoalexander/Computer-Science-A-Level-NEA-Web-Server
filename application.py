@@ -244,19 +244,19 @@ def uploadS3():
 @application.route("/downloadS3", methods = ["POST"])
 # route to upload byte data of the user's personalised audio messages
 def downloadS3():
-   # try:
-    with open("/etc/keys/S3.json", "r") as file:
-        keys = json.load(file)
-    data = request.form # assigns the metadata sent to the API to a variable ('data')
-    if data["bucketName"] == "nea-audio-messages":
-        fileName = "/tmp/audioMessage_download.pkl"
-    elif data["bucketName"] == "nea-visitor-log":
-        fileName = "/tmp/visitorImage_download.png"
-    s3 = boto3.client("s3", aws_access_key_id=keys["accessKey"], aws_secret_access_key=keys["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
-    s3.download_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"])  # downloads the txt file with the name equal to the concerned messageID from the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is downloaded and stored temporarily on the AWS server
-    return send_file(fileName, as_attachment = True)
-   #except:
-       # return "error"
+    try:
+        with open("/etc/keys/S3.json", "r") as file:
+            keys = json.load(file)
+        data = request.form # assigns the metadata sent to the API to a variable ('data')
+        if data["bucketName"] == "nea-audio-messages":
+            fileName = "/tmp/audioMessage_download.pkl"
+        elif data["bucketName"] == "nea-visitor-log":
+            fileName = "/tmp/visitorImage_download.png"
+        s3 = boto3.client("s3", aws_access_key_id=keys["accessKey"], aws_secret_access_key=keys["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
+        s3.download_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"])  # downloads the txt file with the name equal to the concerned messageID from the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is downloaded and stored temporarily on the AWS server
+        return send_file(fileName, as_attachment = True)
+    except:
+        return "error"
     
 @application.route("/create_ID", methods = ["POST"])
 # route to create a unique faceID for the face captured
