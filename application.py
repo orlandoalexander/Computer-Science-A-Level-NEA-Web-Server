@@ -180,7 +180,7 @@ def view_visitorLog():
 
 
 @application.route("/latest_visitorLog", methods = ["POST"])
-def view_visitorLog():
+def latest_visitorLog():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
