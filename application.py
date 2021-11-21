@@ -186,7 +186,7 @@ def view_visitorLog():
     data = request.form  # assigns the data sent to the API to a variable ('data')
     mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"]))
+    query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
     return jsonify(result)
