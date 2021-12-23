@@ -256,6 +256,44 @@ def get_S3Key():
     else:
         return "error"
 
+
+@application.route("/update_SmartBellIDs", methods = ["POST"])
+# route to add data about a new audio message to the 'audioMessages' table
+def update_SmartBellIDs():
+    try:
+        with open("/etc/keys/db.json", "r") as file:
+            keys = json.load(file)
+        data = request.form # assigns the data sent to the API to a variable ('data')
+        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                       database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+        query = "INSERT INTO SmartBellIDs (visitID, imageTimestamp, faceID, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['visitID'], data['imageTimestamp'], data['faceID'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        mydb.commit() # commits the changes to the MySQL database made by the executed query
+        return "success"
+    except:
+        return "error"
+
+@application.route("/verify_SmartBellID", methods=["POST"])
+# route to check whether the messageID that has been generated for an audio message does not already exist
+def verify_SmartBellID():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT EXISTS(SELECT * FROM SmartBellIDs WHERE id = '%s')" % (data[
+        'id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = (myCursor.fetchone()[
+        0])  # returns the first result of the query result (accountID), if there is a result to be returned
+    if result != 0:
+        return "exists"  # the string 'exists' is returned if the messageID generated is already used by another audio message in the 'audioMessages' table
+    else:
+        return "notExists"  # the string 'notExists' is returned if the messageID generated is not already used by another audio message in the 'audioMessages' table
+
+
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
 
