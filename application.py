@@ -76,15 +76,18 @@ def view_audioMessages():
     mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
-    query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+    query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE accountID = '%s')" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchall() # returns all the results of the query result (messageName and messageText), if there is a result to be returned
-    if len(result) != 0:
-        result_dict = dict() # creates a dictionary to store the results from the executed query
-        result_dict["length"] = len(result) # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
+    if result == 1:
+        query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
+        myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = myCursor.fetchall()  # returns all the results of the query result (messageName and messageText), if there is a result to be returned
+        result_dict = dict()  # creates a dictionary to store the results from the executed query
+        result_dict["length"] = len(result)  # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
-            result_dict[str(result.index(i))] = i # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
-        return jsonify(result_dict) # returns a jsonfied object of the results dictionary using the method 'jsonify'
+            result_dict[str(result.index(i))] = i  # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
+        return jsonify(result_dict)  # returns a jsonfied object of the results dictionary using the method 'jsonify'
     else:
         return 'none'
     
