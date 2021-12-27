@@ -92,7 +92,7 @@ def view_audioMessages():
         result_dict["length"] = len(result)  # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
             result_dict[str(result.index(i))] = i  # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
-        return {'result':result_dict[0]}  # returns a jsonfied object of the results dictionary using the method 'jsonify'
+        return {'result':result_dict}  # returns a jsonfied object of the results dictionary using the method 'jsonify'
     else:
         return {'result':'none'}
     
