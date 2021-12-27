@@ -53,7 +53,7 @@ def verifyUser():
         result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
         return {'result': result}
     else:
-        return {'result': 'none'}
+        return {'result': ['none']}
 
 @application.route("/verifyAccount", methods = ["POST"])
 # route to verify that a user's account doesn't already exist
@@ -94,7 +94,7 @@ def view_audioMessages():
             result_dict[str(result.index(i))] = i  # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
         return {'result':result_dict}  # returns a jsonfied object of the results dictionary using the method 'jsonify'
     else:
-        return {'result':'none'}
+        return {'result':['none']}
     
     
 @application.route("/verify_messageID", methods = ["POST"])
@@ -200,7 +200,7 @@ def latest_visitorLog():
         result = myCursor.fetchone()
         return {'result': result}
     else:
-        return {'result': 'none'}
+        return {'result': ['none']}
 
 
 
