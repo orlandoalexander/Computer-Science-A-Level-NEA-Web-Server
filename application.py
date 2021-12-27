@@ -268,7 +268,7 @@ def update_SmartBellIDs():
     if 'accountID' not in data: # if request is to add a new id, not a new accountID
         query = "INSERT INTO SmartBellIDs (id) VALUES ('%s')" % (data['id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     else:
-        query = "INSERT INTO SmartBellIDs (accountID) VALUES ('%s') WHERE id = '%s'" % (data['accountID'], data['id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        query = "UPDATE SmartBellIDs SET accountID = ('%s') WHERE id = '%s'" % (data['accountID'], data['id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     mydb.commit() # commits the changes to the MySQL database made by the executed query
 
