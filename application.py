@@ -47,7 +47,7 @@ def verifyUser():
 
     query = "SELECT EXISTS(SELECT accountID FROM users WHERE email = '%s' AND password = '%s')" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone())[0] # returns the first result of the query result (accountID), if there is a result to be returned
+    result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
     if result != 0:
         return result # the accountID of the account matching the details inputted by the user is returned 
     else:
@@ -360,9 +360,9 @@ def verify_SmartBellID():
     else:
         return "notExists"  # the string 'notExists' is returned if the messageID generated is not already used by another audio message in the 'audioMessages' table
 
-@application.route("/verify_pairing", methods=["POST"])
+@application.route("/verifyPairing", methods=["POST"])
 # route to check whether the messageID that has been generated for an audio message does not already exist
-def verify_pairing():
+def verifyPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
