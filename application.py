@@ -308,7 +308,7 @@ def verify_pairing():
     query = "SELECT accountID FROM SmartBellIDs WHERE id = ('%s')" % (data['id'])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
-    return result
+    return {'result':result}
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
