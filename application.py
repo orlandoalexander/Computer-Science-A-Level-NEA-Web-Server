@@ -84,7 +84,7 @@ def view_audioMessages():
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE accountID = '%s')" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = (myCursor.fetchone()[0]).text # returns all the results of the query result (messageName and messageText), if there is a result to be returned
-    if result == 1:
+    if result == '1':
         query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall()  # returns all the results of the query result (messageName and messageText), if there is a result to be returned
