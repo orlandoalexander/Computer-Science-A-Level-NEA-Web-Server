@@ -82,16 +82,16 @@ def view_audioMessages():
         myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
         query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        result = myCursor.fetchall() # returns all the results of the query result (messageName and fileText), if there is a result to be returned
+        result = myCursor.fetchall() # returns all the results of the query result (messageName and messageText), if there is a result to be returned
         result_dict = dict() # creates a dictionary to store the results from the executed query
         result_dict["length"] = len(result) # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
-            result_dict[str(result.index(i))] = i # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value 
+            result_dict[str(result.index(i))] = i # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
         return jsonify(result_dict) # returns a jsonfied object of the results dictionary using the method 'jsonify'
     except:
-        return 'error'
-
-
+        return "error"
+    
+    
 @application.route("/verify_messageID", methods = ["POST"])
 # route to check whether the messageID that has been generated for an audio message does not already exist
 def verify_messageID():
@@ -137,10 +137,10 @@ def update_audioMessages():
         mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-        if data["initialCreation"] == "False":
-            query = "UPDATE audioMessages SET messageName = '%s', fileText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['fileText'], data['messageID'])
+        if data['initialCreation'] == "False":
+            query = "UPDATE audioMessages SET messageName = '%s', messageText = '%s' WHERE messageID = '%s'" % (data['messageName'], data['messageText'], data['messageID'])
         else:
-            query = "INSERT INTO audioMessages (messageID, messageName, fileText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['fileText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+            query = "INSERT INTO audioMessages (messageID, messageName, messageText, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['messageID'], data['messageName'], data['messageText'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
         return "success"
@@ -158,13 +158,70 @@ def update_visitorLog():
         mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-        query = "INSERT INTO visitorLog (visitID, imageTimestamp, faceID, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['visitID'], data['imageTimestamp'], data['faceID'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        query = "INSERT INTO visitorLog (visitID, imageTimestamp, faceID, confidence, accountID) VALUES ('%s', '%s', '%s', '%s', '%s')" % (data['visitID'], data['imageTimestamp'], data['faceID'], data['confidence'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
         return "success"
     except:
         return "error"
-    
+
+
+@application.route("/view_visitorLog", methods = ["POST"])
+def view_visitorLog():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT imageTimestamp, faceID, confidence FROM visitorLog WHERE visitID = '%s'" % (data["visitID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()
+    return jsonify(result)
+
+
+@application.route("/latest_visitorLog", methods = ["POST"])
+def view_visitorLog():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()
+    return jsonify(result)
+
+
+
+@application.route("/update_knownFaces", methods = ["POST"])
+# route to add data about a new audio message to the 'audioMessages' table
+def update_knownFaces():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    if data['faceName'] == "": # if this is the first time the record with this faceID has been added to the database (from the raspberry pi)
+        query = "INSERT INTO knownFaces (faceID, faceName, accountID) VALUES ('%s', '%s', '%s')" % (data['faceID'], data['faceName'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+    else: # called when the user has entered the name for the faceID value and wants to store this value
+        query = "UPDATE knownFaces SET faceName = '%s' WHERE faceID = '%s'" % (data['faceName'], data['faceID'])
+    myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    mydb.commit() # commits the changes to the MySQL database made by the executed query
+    return "success"
+
+
+@application.route("/view_knownFaces", methods = ["POST"])
+def view_knownFaces():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT faceName FROM knownFaces WHERE faceID = '%s'" % (data["faceID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
+    return jsonify(result)
     
 @application.route("/delete_audioMessages", methods = ["POST"])
 def delete_audioMessages():
@@ -199,14 +256,17 @@ def uploadS3():
     except:
         return "error"
     
-@application.route("/downloadPkl", methods = ["POST"])
+@application.route("/downloadS3", methods = ["POST"])
 # route to upload byte data of the user's personalised audio messages
-def downloadTxt(): 
+def downloadS3():
     try:
         with open("/etc/keys/S3.json", "r") as file:
             keys = json.load(file)
         data = request.form # assigns the metadata sent to the API to a variable ('data')
-        fileName = "/tmp/audioMessage_download.pkl"
+        if data["bucketName"] == "nea-audio-messages":
+            fileName = "/tmp/audioMessage_download.pkl"
+        elif data["bucketName"] == "nea-visitor-log":
+            fileName = "/tmp/visitorImage_download.png"
         s3 = boto3.client("s3", aws_access_key_id=keys["accessKey"], aws_secret_access_key=keys["secretKey"]) # initialises a connection to the S3 client on AWS using the 'accessKey' and 'secretKey' sent to the API
         s3.download_file(Filename=fileName, Bucket=data["bucketName"], Key=data["s3File"])  # downloads the txt file with the name equal to the concerned messageID from the S3 bucket called 'nea-audio-messages'. The name of the txt file when it is downloaded and stored temporarily on the AWS server
         return send_file(fileName, as_attachment = True)
@@ -215,7 +275,7 @@ def downloadTxt():
     
 @application.route("/create_ID", methods = ["POST"])
 # route to create a unique faceID for the face captured
-def crate_faceID():
+def create_faceID():
     data = request.form
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -224,9 +284,11 @@ def crate_faceID():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     while True:  # creates an infinite loop
         chars = string.ascii_uppercase + string.ascii_lowercase + string.digits  # creates a concatenated string of all the uppercase and lowercase alphabetic characters and all the digits (0-9)
-        ID = ''.join(random.choice(chars) for i in range(16))  # the 'random' module randomly selects 16 characters from the string 'chars' to form the unique messageID
+        ID = (''.join(random.choice(chars) for i in range(43)))+'=' # unique message ID is compatible format for fernet encryption
         if data["field"] == "visitID":
             query = "SELECT EXISTS(SELECT * FROM visitorLog WHERE visitID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        elif data["field"] == "accountID":
+            query = "SELECT EXISTS(SELECT * FROM users WHERE accountID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         else:
             query = "SELECT EXISTS(SELECT * FROM knownFaces WHERE faceID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -247,15 +309,17 @@ def get_S3Key():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
-    result = myCursor.fetchone()[0]
+    result = myCursor.fetchone()
     if result != 0:
-        key = data["accountID"]
+        key = data["accountID"].encode() # key must be encoded as bytes
         fernet = Fernet(key) # instantiates Fernet encryption key using user's accountID as the encryption key
         accessKey_encoded = fernet.encrypt(keys_S3["accessKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
         secretKey_encoded = fernet.encrypt(keys_S3["secretKey"].encode()) # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        return {"accessKey_encoded": accessKey_encoded, "secretKey_encoded": secretKey_encoded}
+        encodedKeys_dict = {'accessKey_encoded': accessKey_encoded.decode(), 'secretKey_encoded': secretKey_encoded.decode()} # keys must be decoded to be jsonified and sent over API
+        return encodedKeys_dict
     else:
         return "error"
+
 @application.route("/update_SmartBellIDs", methods = ["POST"])
 # route to add data about a new audio message to the 'audioMessages' table
 def update_SmartBellIDs():
@@ -309,6 +373,9 @@ def verify_pairing():
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
     return {'result':result}
+
+
+
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
