@@ -46,7 +46,7 @@ def verifyUser():
     data = request.form # assigns the data sent to the API to a variable ('data')
     query = "SELECT EXISTS (SELECT * FROM users WHERE email = '%s' AND password = '%s')" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchall()) # returns the first result of the query result (accountID), if there is a result to be returned
+    result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
     if result == 1:
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -66,7 +66,7 @@ def verifyAccount():
     myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM users WHERE email = '%s')" % (data['email']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchall() # returns 1 if there is a result and 0 if not
+    result = myCursor.fetchone() # returns 1 if there is a result and 0 if not
     if result == 1:
         return "exists" # the string 'exists' is returned if the user's inputted details match an account which already exists in the 'users' MySQL table
     else:
@@ -84,7 +84,6 @@ def view_audioMessages():
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE accountID = '%s')" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()[0] # returns all the results of the query result (messageName and messageText), if there is a result to be returned
-    return str(result)
     if result == 1:
         query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
