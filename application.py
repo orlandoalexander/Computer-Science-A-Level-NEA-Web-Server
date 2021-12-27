@@ -84,6 +84,7 @@ def view_audioMessages():
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE accountID = '%s')" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchall() # returns all the results of the query result (messageName and messageText), if there is a result to be returned
+    return result
     if result == 1:
         query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -108,8 +109,8 @@ def verify_messageID():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE messageID = '%s')" % (data['messageID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone()[0]) # returns the first result of the query result (accountID), if there is a result to be returned
-    if result != 0:
+    result = myCursor.fetchall()# returns the first result of the query result (accountID), if there is a result to be returned
+    if result == 1:
         return "exists" # the string 'exists' is returned if the messageID generated is already used by another audio message in the 'audioMessages' table
     else:
         return "notExists" # the string 'notExists' is returned if the messageID generated is not already used by another audio message in the 'audioMessages' table
@@ -125,8 +126,8 @@ def verify_messageName():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query =  "SELECT EXISTS(SELECT * FROM audioMessages WHERE messageName = '%s' AND accountID = '%s')" % (data['messageName'], data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone()[0]) # returns the first result of the query result (messageName), if there is a result to be returned
-    if result != 0:
+    result = myCursor.fetchall() # returns the first result of the query result (messageName), if there is a result to be returned
+    if result == 1:
         return "exists" # the string 'exists' is returned if the message name is already assigned one of the user's audio messages in the 'audioMessages' table
     else:
         return "notExists" # the string 'notExists' is returned if the message name is not already assigned one of the user's audio messages in the 'audioMessages' table
