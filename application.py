@@ -49,7 +49,7 @@ def verifyUser():
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
     if result != 0:
-        return result # the accountID of the account matching the details inputted by the user is returned 
+        return str(result) # the accountID of the account matching the details inputted by the user is returned
     else:
         return "none" # the string 'none' is returned if the user's inputted details do not match an account stored in the 'users' MySQL table
     
