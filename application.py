@@ -266,9 +266,9 @@ def update_SmartBellIDs():
         mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-        if 'id' in data:
+        if 'accountID' not in data:
             query = "INSERT INTO SmartBellIDs (id) VALUES ('%s')" % (data['id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
-        elif 'accountID' in data:
+        else:
             query = "INSERT INTO SmartBellIDs (accountID) VALUES ('%s') WHERE id = '%s'" % (data['accountID'], data['id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
