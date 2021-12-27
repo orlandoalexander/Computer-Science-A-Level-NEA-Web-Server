@@ -406,7 +406,7 @@ def checkPairing():
 
 @application.route("/getPairing", methods=["POST"])
 # route to check whether the messageID that has been generated for an audio message does not already exist
-def checkPairing():
+def getPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
