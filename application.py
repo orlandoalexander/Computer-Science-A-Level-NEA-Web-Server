@@ -45,14 +45,10 @@ def verifyUser():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     data = request.form # assigns the data sent to the API to a variable ('data')
 
-    query = "SELECT EXISTS(SELECT accountID FROM users WHERE email = '%s' AND password = '%s')" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+    query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
-    if result != 0:
-        return str(result) # the accountID of the account matching the details inputted by the user is returned
-    else:
-        return "none" # the string 'none' is returned if the user's inputted details do not match an account stored in the 'users' MySQL table
-    
+    return str(result)
 @application.route("/verifyAccount", methods = ["POST"])
 # route to verify that a user's account doesn't already exist
 def verifyAccount():
