@@ -48,7 +48,8 @@ def verifyUser():
     query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
-    return str(result)
+    return result
+
 @application.route("/verifyAccount", methods = ["POST"])
 # route to verify that a user's account doesn't already exist
 def verifyAccount():
