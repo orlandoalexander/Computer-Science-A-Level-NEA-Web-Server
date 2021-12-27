@@ -198,7 +198,7 @@ def latest_visitorLog():
         query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchone()
-        return {'result': result[0]}
+        return {'result': result}
     else:
         return {'result': 'none'}
 
