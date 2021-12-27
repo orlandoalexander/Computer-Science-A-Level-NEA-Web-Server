@@ -383,7 +383,7 @@ def verifyPairing():
     query = "SELECT accountID FROM SmartBellIDs WHERE id = ('%s')" % (data['id'])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
-    return {'result':result}
+    return {'result':result[0]}
 
 
 
