@@ -46,7 +46,8 @@ def verifyUser():
     data = request.form # assigns the data sent to the API to a variable ('data')
     query = "SELECT EXISTS (SELECT * FROM users WHERE email = '%s' AND password = '%s')" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
+    result = (myCursor.fetchone())[0] # returns the first result of the query result (accountID), if there is a result to be returned
+    return result
     if result == 1:
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -66,7 +67,7 @@ def verifyAccount():
     myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM users WHERE email = '%s')" % (data['email']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchone() # returns 1 if there is a result and 0 if not
+    result = myCursor.fetchone()[0] # returns 1 if there is a result and 0 if not
     if result == 1:
         return "exists" # the string 'exists' is returned if the user's inputted details match an account which already exists in the 'users' MySQL table
     else:
@@ -108,7 +109,7 @@ def verify_messageID():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE messageID = '%s')" % (data['messageID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchall()# returns the first result of the query result (accountID), if there is a result to be returned
+    result = myCursor.fetchone()[0] # returns all the results of the query result (messageName and messageText), if there is a result to be returned
     if result == 1:
         return "exists" # the string 'exists' is returned if the messageID generated is already used by another audio message in the 'audioMessages' table
     else:
@@ -125,7 +126,7 @@ def verify_messageName():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query =  "SELECT EXISTS(SELECT * FROM audioMessages WHERE messageName = '%s' AND accountID = '%s')" % (data['messageName'], data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchall() # returns the first result of the query result (messageName), if there is a result to be returned
+    result = myCursor.fetchone()[0] # returns all the results of the query result (messageName and messageText), if there is a result to be returned
     if result == 1:
         return "exists" # the string 'exists' is returned if the message name is already assigned one of the user's audio messages in the 'audioMessages' table
     else:
@@ -191,10 +192,16 @@ def latest_visitorLog():
     data = request.form  # assigns the data sent to the API to a variable ('data')
     mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
+    query = "SELECT EXISTS(SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC)"  % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchone()
-    return jsonify(result)
+    result = myCursor.fetchone()[0] # returns all the results of the query result (messageName and messageText), if there is a result to be returned
+    if result == 1:
+        query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
+        myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = myCursor.fetchone()
+        return {'result': result}
+    else:
+        return {'result': 'none'}
 
 
 
