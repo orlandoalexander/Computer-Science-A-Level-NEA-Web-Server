@@ -51,9 +51,9 @@ def verifyUser():
         query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
-        return str(result)
+        return {'result': result}
     else:
-        return 'none'
+        return {'result': 'none'}
 
 @application.route("/verifyAccount", methods = ["POST"])
 # route to verify that a user's account doesn't already exist
@@ -92,9 +92,9 @@ def view_audioMessages():
         result_dict["length"] = len(result)  # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
             result_dict[str(result.index(i))] = i  # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
-        return jsonify(result_dict)  # returns a jsonfied object of the results dictionary using the method 'jsonify'
+        return {'result':jsonify(result_dict)}  # returns a jsonfied object of the results dictionary using the method 'jsonify'
     else:
-        return 'none'
+        return {'result':'none'}
     
     
 @application.route("/verify_messageID", methods = ["POST"])
