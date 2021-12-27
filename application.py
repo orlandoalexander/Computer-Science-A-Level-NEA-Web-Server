@@ -44,11 +44,15 @@ def verifyUser():
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     data = request.form # assigns the data sent to the API to a variable ('data')
-
-    query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+    query = "SELECT EXISTS (SELECT * FROM users WHERE email = '%s' AND password = '%s')" % (data['email'], data['password']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
-    return result
+    result = (myCursor.fetchall()) # returns the first result of the query result (accountID), if there is a result to be returned
+    if result == 1:
+        query = "SELECT accountID FROM users WHERE email = '%s' AND password = '%s'" % (data['email'], data['password'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
+        myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+        result = (myCursor.fetchone()) # returns the first result of the query result (accountID), if there is a result to be returned
+    else:
+        return 'none'
 
 @application.route("/verifyAccount", methods = ["POST"])
 # route to verify that a user's account doesn't already exist
@@ -61,8 +65,8 @@ def verifyAccount():
     myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM users WHERE email = '%s')" % (data['email']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone())[0] # returns the first result of the query result (accountID), if there is a result to be returned
-    if result != 0:
+    result = myCursor.fetchall() # returns 1 if there is a result and 0 if not
+    if result == 1:
         return "exists" # the string 'exists' is returned if the user's inputted details match an account which already exists in the 'users' MySQL table
     else:
         return "notExists" # the string 'notExists' is returned if the user's inputted details do not match an account which already exists in the 'users' MySQL table
