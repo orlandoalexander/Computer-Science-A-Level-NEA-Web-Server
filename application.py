@@ -447,8 +447,9 @@ def checkFaces():
         print(faceIDs_delete)
         for faceID in faceIDs_delete:
             print(faceID)
-            query = "DELETE FROM knownFaces WHERE faceID = '%s' and accountID = '%s'" % (faceID[0], data['accountID'])
+            query = "DELETE FROM knownFaces WHERE faceID = '%s' AND accountID = '%s'" % (faceID[0], data['accountID'])
             myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    mydb.commit()  # commits the changes to the MySQL database made by the executed query
     response = jsonify(faceIDs)
     return response
 
