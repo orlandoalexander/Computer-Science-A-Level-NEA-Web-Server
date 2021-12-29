@@ -442,11 +442,14 @@ def checkFaces():
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall()
         faceIDs.append(result)
-        for faceID in result:
+        faceIDs_delete = faceIDs[1:]
+        print(faceIDs_delete)
+        for faceID in faceIDs_delete:
+            print(faceID)
             query = "DELETE FROM knownFaces WHERE faceID = '%s'" % (faceID)
             myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = jsonify(faceIDs)
-    return result
+    response = jsonify(faceIDs)
+    return response
 
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
