@@ -444,10 +444,13 @@ def checkFaces():
         result = myCursor.fetchall()
         faceIDs.append(result)
         faceIDs_delete = result[1:]
-        print(faceIDs_delete)
+        faceID_keep = result[0][0]
+        print(faceIDs_delete, faceID_keep)
         for faceID in faceIDs_delete:
             print(faceID)
             query = "DELETE FROM knownFaces WHERE faceID = '%s' AND accountID = '%s'" % (faceID[0], data['accountID'])
+            myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+            query = "UPDATE visitorLog SET faceID = '%s' WHERE faceID = '%s' AND accountID = '%s'" % (faceID_keep, faceID[0], data['accountID'])
             myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     mydb.commit()  # commits the changes to the MySQL database made by the executed query
     response = jsonify(faceIDs)
