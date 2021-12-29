@@ -438,7 +438,7 @@ def checkFaces():
     result = myCursor.fetchall()
     faceIDs = []
     for faceName in result:
-        query = "SELECT faceID FROM knownFaces GROUP BY '%s' HAVING count(*) > 1" % (faceName)
+        query = "SELECT faceID FROM knownFaces WHERE faceName = '%s'" % (faceName)
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         faceIDs.append(myCursor.fetchall())
     result = jsonify(faceIDs)
