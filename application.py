@@ -433,20 +433,20 @@ def checkFaces():
     mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT faceName FROM knownFaces GROUP BY faceName HAVING count(*) > 1"
+    query = "SELECT faceName FROM knownFaces WHERE accountID = '%s' GROUP BY faceName HAVING count(*) > 1" % (data['accountID'])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchall()
     faceIDs = []
     for faceName in result:
-        query = "SELECT faceID FROM knownFaces WHERE faceName = '%s'" % (faceName)
+        query = "SELECT faceID FROM knownFaces WHERE faceName = '%s' AND accountID = '%s' " % (faceName, data['accountID'])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall()
         faceIDs.append(result)
-        faceIDs_delete = faceIDs[1:]
+        faceIDs_delete = result[1:]
         print(faceIDs_delete)
         for faceID in faceIDs_delete:
             print(faceID)
-            query = "DELETE FROM knownFaces WHERE faceID = '%s'" % (faceID)
+            query = "DELETE FROM knownFaces WHERE faceID = '%s' and accountID = '%s'" % (faceID, data['accountID'])
             myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     response = jsonify(faceIDs)
     return response
