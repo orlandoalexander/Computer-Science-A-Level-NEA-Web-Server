@@ -441,6 +441,9 @@ def checkFaces():
         query = "SELECT faceID FROM knownFaces WHERE faceName = '%s'" % (faceName)
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         faceIDs.append(myCursor.fetchall())
+        for faceID in faceIDs:
+            query = "DELETE FROM knownFaces WHERE faceID = '%s'" % (faceID)
+            myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = jsonify(faceIDs)
     return result
 
