@@ -438,6 +438,7 @@ def checkFaces():
     result = myCursor.fetchall()
     faceIDs = []
     for faceName in result:
+        print(faceName)
         query = "SELECT faceID FROM knownFaces WHERE faceName = '%s' AND accountID = '%s' " % (faceName[0], data['accountID'])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall()
