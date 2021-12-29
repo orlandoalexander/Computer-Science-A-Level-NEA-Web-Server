@@ -424,6 +424,20 @@ def getPairing():
     else:
         return {'result': 'none'}
 
+@application.route("/checkFaces", methods=["POST"])
+# route to check whether the messageID that has been generated for an audio message does not already exist
+def checkFaces():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                                   database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query = "SELECT faceID, COUNT(*) c FROM knownFaces GROUP BY faceName HAVING c > 1"
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = jsonify(myCursor.fetchall())
+    return result
+
 if __name__ == "__main__":  # if the name of the file is the main program (not a module imported from another file)...
     application.run(debug=True)  # ...then the API server begins running
 
