@@ -347,9 +347,9 @@ def update_SmartBellIDs():
             query = "UPDATE SmartBellIDs SET accountID = ('%s') WHERE id = '%s'" % (data['accountID'], data['id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query) # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         mydb.commit() # commits the changes to the MySQL database made by the executed query
-        return 'success'
+        return 'True'
     except:
-        return 'error'
+        return 'False'
 
 
 @application.route("/verify_SmartBellID", methods=["POST"])
