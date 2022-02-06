@@ -191,11 +191,11 @@ def latest_visitorLog():
     data = request.form  # assigns the data sent to the API to a variable ('data')
     mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT EXISTS(SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC)"  % (data["accountID"])
+    query = "SELECT EXISTS(SELECT visitID, faceID FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC)"  % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()[0] # returns all the results of the query result (messageName and messageText), if there is a result to be returned
     if result == 1:
-        query = "SELECT visitID, faceID, confidence FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
+        query = "SELECT visitID, faceID FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC"  % (data["accountID"])
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchone()
         return {'result': result}
