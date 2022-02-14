@@ -297,7 +297,7 @@ def create_faceID():
             query = "SELECT EXISTS(SELECT * FROM visitorLog WHERE visitID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         elif data["field"] == "accountID":
             query = "SELECT EXISTS(SELECT * FROM users WHERE accountID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
-        else:
+        elif data["field"] == "faceID":
             query = "SELECT EXISTS(SELECT * FROM knownFaces WHERE faceID = '%s')" % (ID)  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchone()[0]  # returns the first result of the query result (accountID), if there is a result to be returned
