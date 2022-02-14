@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file
-import mysql.connector
+from mysql import connector
 import boto3
 import pickle
 import json
@@ -24,7 +24,7 @@ def updateUsers():
         with open("/etc/keys/db.json", "r") as file:
             keys = json.load(file)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+        mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]), database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         query = "INSERT INTO users(accountID, firstName, surname, email, password) VALUES ('%s','%s','%s','%s','%s')" % (data['accountID'], data['firstName'], data['surname'], data['email'], data['password']) # MySQL query to add the data sent with the API to the appropriate columns in the 'users' table
         myCursor.execute(query) # executes the query in the MySQL database
@@ -38,7 +38,7 @@ def updateUsers():
 def verifyUser():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     data = request.form # assigns the data sent to the API to a variable ('data')
@@ -59,7 +59,7 @@ def verifyAccount():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM users WHERE email = '%s')" % (data['email']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
@@ -76,7 +76,7 @@ def view_audioMessages():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE accountID = '%s')" % (data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
@@ -101,7 +101,7 @@ def verify_messageID():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE messageID = '%s')" % (data['messageID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
@@ -118,7 +118,7 @@ def verify_messageName():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query =  "SELECT EXISTS(SELECT * FROM audioMessages WHERE messageName = '%s' AND accountID = '%s')" % (data['messageName'], data['accountID']) # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
@@ -137,7 +137,7 @@ def update_audioMessages():
         with open("/etc/keys/db.json", "r") as file:
             keys = json.load(file)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+        mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         if data['initialCreation'] == "False":
@@ -158,7 +158,7 @@ def update_visitorLog():
         with open("/etc/keys/db.json", "r") as file:
             keys = json.load(file)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+        mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         query = "INSERT INTO visitorLog (visitID, imageTimestamp, faceID, accountID) VALUES ('%s', '%s', '%s', '%s')" % (data['visitID'], data['imageTimestamp'], data['faceID'], data['accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
@@ -174,7 +174,7 @@ def view_visitorLog():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT imageTimestamp, faceID FROM visitorLog WHERE visitID = '%s'" % (data["visitID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -187,7 +187,7 @@ def latest_visitorLog():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT visitID, faceID FROM visitorLog WHERE accountID = '%s' ORDER BY imageTimestamp DESC)"  % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -208,7 +208,7 @@ def update_knownFaces():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     if data['faceName'] == "": # if this is the first time the record with this faceID has been added to the database (from the raspberry pi)
@@ -225,7 +225,7 @@ def view_knownFaces():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT faceName FROM knownFaces WHERE faceID = '%s'" % (data["faceID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -238,7 +238,7 @@ def delete_audioMessages():
         with open("/etc/keys/db.json", "r") as file:
             keys = json.load(file)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+        mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         query = "DELETE FROM audioMessages WHERE messageID = '%s'" % (data['messageID'])
@@ -288,7 +288,7 @@ def create_faceID():
     data = request.form
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     while True:  # creates an infinite loop
@@ -313,7 +313,7 @@ def get_S3Key():
         keys_db = json.load(file)
     with open("/etc/keys/S3.json", "r") as file:
         keys_S3 = json.load(file)
-    mydb = mysql.connector.connect(host=(keys_db["host"]), user=(keys_db["user"]), passwd=(keys_db["passwd"]),
+    mydb = connector.connect(host=(keys_db["host"]), user=(keys_db["user"]), passwd=(keys_db["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
@@ -336,7 +336,7 @@ def update_SmartBellIDs():
         with open("/etc/keys/db.json", "r") as file:
             keys = json.load(file)
         data = request.form # assigns the data sent to the API to a variable ('data')
-        mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+        mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                        database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
         myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
         if 'accountID' not in data: # if request is to add a new id, not a new accountID
@@ -356,7 +356,7 @@ def verify_SmartBellID():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM SmartBellIDs WHERE id = '%s')" % (data[
@@ -375,7 +375,7 @@ def verifyPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT accountID FROM SmartBellIDs WHERE id = ('%s')" % (data['id'])
@@ -390,7 +390,7 @@ def checkPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM SmartBellIDs WHERE id = ('%s'))" % (data['id'])
@@ -408,7 +408,7 @@ def getPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM SmartBellIDs WHERE accountID = ('%s'))" % (data['accountID'])
@@ -428,7 +428,7 @@ def checkFaces():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = mysql.connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                                    database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT faceName FROM knownFaces WHERE accountID = '%s' GROUP BY faceName HAVING count(*) > 1" % (data['accountID'])
