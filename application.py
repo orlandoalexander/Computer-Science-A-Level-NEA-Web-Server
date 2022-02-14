@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, send_file
 from mysql import connector
 import boto3
-import pickle
 import json
 import random
 import string
