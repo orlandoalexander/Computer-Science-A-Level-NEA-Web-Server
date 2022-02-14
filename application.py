@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify, send_file
-from flask_restful import Api
 import mysql.connector
 import boto3
 import pickle
@@ -8,8 +7,7 @@ import random
 import string
 from cryptography.fernet import Fernet
 
-application = Flask(__name__) # the file is wrapped in the Flask constructer which enables the file to be a web-application
-api = Api(application)  # wrap 'application' variable in restful API
+application = Flask(__name__) # the file is wrapped in the Flask constructer and stored as an object 'application'. Enables the file to be a web-application
 
 
 @application.route("/") 
