@@ -15,7 +15,7 @@ def test():
     return "Hey there" # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed
 
 
-@application.route("/updateUsers", methods = ["POST"])
+@application.route("/updateUsers")
 # route to add a new user to the 'users' table
 
 def updateUsers():
