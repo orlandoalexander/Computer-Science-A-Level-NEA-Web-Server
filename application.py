@@ -6,7 +6,14 @@ import random
 import string
 from cryptography.fernet import Fernet
 
-application = Flask(__name__) # the file is wrapped in the Flask constructer and stored as an object 'application'. Enables the file to be a web-application
+application = Flask(__name__) # wraps file using the Flask constructor and stores it as the central object called 'application'
+
+
+def myFunction():
+    # do something
+    return "Json string"
+
+application.route("/pathName", methods = ["POST"])(myFunction)
 
 
 @application.route("/") 
@@ -15,9 +22,9 @@ def test():
     return "Hey there" # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed
 
 
-
 @application.route("/updateUsers", methods = ["POST"])
-# route to add a new user to the 'users' table 
+# route to add a new user to the 'users' table
+
 def updateUsers():
     try:
         with open("/etc/keys/db.json", "r") as file:
