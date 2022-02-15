@@ -9,13 +9,6 @@ from cryptography.fernet import Fernet
 application = Flask(__name__) # wraps file using the Flask constructor and stores it as the central object called 'application'
 
 
-def myFunction():
-    # do something
-    return "Json string"
-
-application.route("/pathName")(myFunction)
-
-
 @application.route("/") 
 # homepage route 
 def test():
