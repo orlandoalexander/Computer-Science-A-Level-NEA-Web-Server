@@ -13,7 +13,7 @@ def myFunction():
     # do something
     return "Json string"
 
-application.route("/pathName", methods = ["POST"])(myFunction)
+application.route("/pathName")(myFunction)
 
 
 @application.route("/") 
