@@ -387,7 +387,7 @@ def get_S3Key():
         else:
             return "error"
     except:
-        retunr "error"
+        return "error"
 
 
 @application.route("/update_SmartBellIDs", methods=["POST"])
