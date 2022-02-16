@@ -365,26 +365,29 @@ def create_faceID():
 @application.route("/get_S3Key", methods=["POST"])
 # route to retrieve the pair of keys required to interact with AWS S3 storage server
 def get_S3Key():
-    with open("/etc/keys/db.json", "r") as file:  # load file storing credentials to access RDS database
-        keys = json.load(file)  # convert the json file into a json object
-    data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]), database="ebdb")  # initialise connection to database
-    myCursor = mydb.cursor()  # initialises a cursor which allows communication with 'mydb' (MySQL database session)
-    with open("/etc/keys/S3.json", "r") as file:  # load file storing pair of keys required to establish connection with S3 storage server
-        keys_S3 = json.load(file)  # convert the json file into a json object
-    query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
-    myCursor.execute(query)
-    result = myCursor.fetchone() # retrieve first matching record from MySQL database
-    if result != 0: # verifies if an account exists with the specified accountID 
-        key = data["accountID"].encode()  # key must be encoded as bytes
-        fernet = Fernet(key)  # instantiates Fernet encryption object using user's accountID as the encryption key
-        accessKey_encrypted = fernet.encrypt(keys_S3["accessKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        secretKey_encrypted= fernet.encrypt(keys_S3["secretKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        encodedKeys_dict = {'accessKey_encoded': accessKey_encrypted.decode(),
-                            'secretKey_encoded': secretKey_encrypted.decode()}  # keys must be decoded to be jsonified and returned by API
-        return encodedKeys_dict
-    else:
-        return "error"
+    try:
+        with open("/etc/keys/db.json", "r") as file:  # load file storing credentials to access RDS database
+            keys = json.load(file)  # convert the json file into a json object
+        data = request.form  # assigns the data sent to the API to a variable ('data')
+        mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]), database="ebdb")  # initialise connection to database
+        myCursor = mydb.cursor()  # initialises a cursor which allows communication with 'mydb' (MySQL database session)
+        with open("/etc/keys/S3.json", "r") as file:  # load file storing pair of keys required to establish connection with S3 storage server
+            keys_S3 = json.load(file)  # convert the json file into a json object
+        query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
+        myCursor.execute(query)
+        result = myCursor.fetchone() # retrieve first matching record from MySQL database
+        if result != 0: # verifies if an account exists with the specified accountID
+            key = data["accountID"].encode()  # key must be encoded as bytes
+            fernet = Fernet(key)  # instantiates Fernet encryption object using user's accountID as the encryption key
+            accessKey_encrypted = fernet.encrypt(keys_S3["accessKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
+            secretKey_encrypted= fernet.encrypt(keys_S3["secretKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
+            encryptedKeys_dict = {'accessKey_encrypted': accessKey_encrypted.decode(),
+                                  'secretKey_encrypted': secretKey_encrypted.decode()}  # keys must be decoded to be jsonified and returned by API
+            return encryptedKeys_dict
+        else:
+            return "error"
+    except:
+        retunr "error"
 
 
 @application.route("/update_SmartBellIDs", methods=["POST"])
