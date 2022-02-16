@@ -315,7 +315,7 @@ def uploadS3():
 # route to download pickled byte data of the user's personalised audio messages or image file of visitor from AWS S3 storage
 def downloadS3():
     try:
-        with open("/etc/keys/S3.json", "r") as file:  # load file storing credentials to access RDS database
+        with open("/etc/keys/S3.json", "r") as file:  # load file storing pair of keys required to establish connection with S3 storage server
             keys = json.load(file)  # convert the json file into a json object
         data = request.form  # assigns the metadata sent to the API to a variable ('data')
         if data["bucketName"] == "nea-audio-messages":
@@ -363,27 +363,25 @@ def create_faceID():
 
 
 @application.route("/get_S3Key", methods=["POST"])
+# route to retrieve the pair of keys required to interact with AWS S3 storage server
 def get_S3Key():
-    data = request.form
-    with open("/etc/keys/db.json", "r") as file:
-        keys_db = json.load(file)
-    with open("/etc/keys/S3.json", "r") as file:
-        keys_S3 = json.load(file)
-    mydb = connector.connect(host=(keys_db["host"]), user=(keys_db["user"]), passwd=(keys_db["passwd"]),
-                             database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    with open("/etc/keys/db.json", "r") as file:  # load file storing credentials to access RDS database
+        keys = json.load(file)  # convert the json file into a json object
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]), database="ebdb")  # initialise connection to database
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with 'mydb' (MySQL database session)
+    with open("/etc/keys/S3.json", "r") as file:  # load file storing pair of keys required to establish connection with S3 storage server
+        keys_S3 = json.load(file)  # convert the json file into a json object
     query = "SELECT * FROM users WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
-    result = myCursor.fetchone()
-    if result != 0:
+    result = myCursor.fetchone() # retrieve first matching record from MySQL database
+    if result != 0: # verifies if an account exists with the specified accountID 
         key = data["accountID"].encode()  # key must be encoded as bytes
-        fernet = Fernet(key)  # instantiates Fernet encryption key using user's accountID as the encryption key
-        accessKey_encoded = fernet.encrypt(keys_S3[
-                                               "accessKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        secretKey_encoded = fernet.encrypt(keys_S3[
-                                               "secretKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
-        encodedKeys_dict = {'accessKey_encoded': accessKey_encoded.decode(),
-                            'secretKey_encoded': secretKey_encoded.decode()}  # keys must be decoded to be jsonified and sent over API
+        fernet = Fernet(key)  # instantiates Fernet encryption object using user's accountID as the encryption key
+        accessKey_encrypted = fernet.encrypt(keys_S3["accessKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
+        secretKey_encrypted= fernet.encrypt(keys_S3["secretKey"].encode())  # use Fernet class instance to encrypt the string - string must be encoded to byte string before it is encrypted
+        encodedKeys_dict = {'accessKey_encoded': accessKey_encrypted.decode(),
+                            'secretKey_encoded': secretKey_encrypted.decode()}  # keys must be decoded to be jsonified and returned by API
         return encodedKeys_dict
     else:
         return "error"
