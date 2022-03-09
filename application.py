@@ -213,6 +213,19 @@ def view_visitorLog():
     result = myCursor.fetchone()
     return jsonify(result)
 
+@application.route("/get_visitorLog", methods=["POST"])
+def get_visitorLog():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                             database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query =  "SELECT imageTimestamp, faceID FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()
+    return jsonify(result)
+
 
 @application.route("/latest_visitorLog", methods=["POST"])
 def latest_visitorLog():
