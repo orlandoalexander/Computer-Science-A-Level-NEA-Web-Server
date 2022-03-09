@@ -500,7 +500,7 @@ def checkFaces():
     mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT faceName FROM knownFaces WHERE accountID = '%s' GROUP BY faceName HAVING count(*) > 1" % (
+    query = "SELECT faceName FROM knownFaces WHERE accountID = '%s' GROUP BY faceName HAVING COUNT(faceName) > 1" % (
     data['accountID'])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchall()
