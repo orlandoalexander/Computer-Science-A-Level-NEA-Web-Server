@@ -234,7 +234,7 @@ def get_faceName():
     mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query =  "SELECT faceName FROM visitorLog WHERE faceID = '%s'" % (data["faceID"])
+    query =  "SELECT faceName FROM knownFaces WHERE faceID = '%s'" % (data["faceID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
     return result
