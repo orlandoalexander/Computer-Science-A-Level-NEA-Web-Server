@@ -226,6 +226,19 @@ def get_visitorLog():
     result = myCursor.fetchall()
     return jsonify(result)
 
+@application.route("/get_faceName", methods=["POST"])
+def get_faceName():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                             database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query =  "SELECT faceName FROM visitorLog WHERE faceID = '%s'" % (data["faceID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()
+    return result
+
 
 @application.route("/get_averageTime", methods=["POST"])
 def get_averageTime():
@@ -236,6 +249,19 @@ def get_averageTime():
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query =  "SELECT AVG(SUBSTRING(imageTimestamp(1,5)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
+    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+    result = myCursor.fetchone()
+    return result
+
+@application.route("/get_averageRate", methods=["POST"])
+def get_averageRate():
+    with open("/etc/keys/db.json", "r") as file:
+        keys = json.load(file)
+    data = request.form  # assigns the data sent to the API to a variable ('data')
+    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
+                             database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
+    query =  "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
     return result
