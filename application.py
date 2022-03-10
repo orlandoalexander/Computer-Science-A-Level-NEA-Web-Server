@@ -5,6 +5,7 @@ import json
 import random
 import string
 from cryptography.fernet import Fernet
+import time
 
 application = Flask(
     __name__)  # wraps file using the Flask constructor and stores it as the central object called 'application'
@@ -237,7 +238,7 @@ def get_faceName():
     query =  "SELECT faceName FROM knownFaces WHERE faceID = '%s'" % (data["faceID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
-    return result
+    return jsonify(result)
 
 
 @application.route("/get_averageTime", methods=["POST"])
@@ -261,10 +262,16 @@ def get_averageRate():
     mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query =  "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
+    query = "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchone()
-    return result
+    count = myCursor.fetchone()
+    query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'"(data["accountID"])
+    myCursor.execute(query)
+    minTime = query.fetchone()
+    currentTime = time.time()
+    totalDays = (currentTime-minTime)/24/3600
+    averageRate = count/totalDays
+    return averageRate
 
 
 @application.route("/latest_visitorLog", methods=["POST"])
