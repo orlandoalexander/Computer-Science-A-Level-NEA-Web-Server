@@ -267,7 +267,7 @@ def get_averageRate():
     count = myCursor.fetchone()
     query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
-    minTime = query.fetchone()
+    minTime = myCursor.fetchone()
     currentTime = time.time()
     totalDays = (currentTime-int(minTime))/24/3600
     averageRate = count/totalDays
