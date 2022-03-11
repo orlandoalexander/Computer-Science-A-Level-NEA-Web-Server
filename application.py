@@ -264,13 +264,13 @@ def get_averageRate():
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    count = myCursor.fetchone()
+    count = myCursor.fetchone()[0]
     query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
-    minTime = myCursor.fetchone()
+    minTime = myCursor.fetchone()[0]
     currentTime = time.time()
     print(minTime)
-    totalDays = (currentTime-float(minTime[0]))/24/3600
+    totalDays = (currentTime-float(minTime))/24/3600
     averageRate = count/totalDays
     return averageRate
 
