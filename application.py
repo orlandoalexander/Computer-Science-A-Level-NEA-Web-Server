@@ -252,7 +252,7 @@ def get_averageTime():
     query =  "SELECT AVG(SUBSTRING(imageTimestamp(1,5)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
-    return {'result': averageRate}
+    return {'result': result}
 
 @application.route("/get_averageRate", methods=["POST"])
 def get_averageRate():
