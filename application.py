@@ -265,7 +265,7 @@ def get_averageRate():
     query = "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     count = myCursor.fetchone()
-    query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'"(data["accountID"])
+    query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)
     minTime = query.fetchone()
     currentTime = time.time()
