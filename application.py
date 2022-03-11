@@ -269,7 +269,8 @@ def get_averageRate():
     myCursor.execute(query)
     minTime = myCursor.fetchone()
     currentTime = time.time()
-    totalDays = (currentTime-int(minTime))/24/3600
+    print(minTime)
+    totalDays = (currentTime-int(minTime[0]))/24/3600
     averageRate = count/totalDays
     return averageRate
 
