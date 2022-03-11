@@ -252,7 +252,7 @@ def get_averageTime():
     query =  "SELECT AVG(SUBSTRING(imageTimestamp(1,5)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchone()
-    return result
+    return {'result': averageRate}
 
 @application.route("/get_averageRate", methods=["POST"])
 def get_averageRate():
@@ -272,7 +272,7 @@ def get_averageRate():
     print(minTime)
     totalDays = (currentTime-float(minTime))/24/3600
     averageRate = count/totalDays
-    return averageRate
+    return {'result': averageRate}
 
 
 @application.route("/latest_visitorLog", methods=["POST"])
