@@ -552,7 +552,7 @@ def getPairing():
 
 
 @application.route("/checkFaces", methods=["POST"])
-# route to check whether the messageID that has been generated for an audio message does not already exist
+# route to check whether the duplicate face names exist for the same user's account
 def checkFaces():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -561,28 +561,25 @@ def checkFaces():
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT faceName FROM knownFaces WHERE accountID = '%s' GROUP BY faceName HAVING COUNT(faceName) > 1" % (
-    data['accountID'])
+    data['accountID']) # select all face names which appear in more than one record in 'knownFaces' for the same user account
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchall()
     faceIDs = []
     for faceName in result:
-        print(faceName)
         query = "SELECT faceID FROM knownFaces WHERE faceName = '%s' AND accountID = '%s' " % (
-        faceName[0], data['accountID'])
+        faceName[0], data['accountID']) # get the face ID for each duplicate face name
         myCursor.execute(
             query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
         result = myCursor.fetchall()
         faceIDs.append(result)
-        faceIDs_delete = result[1:]
-        faceID_keep = result[0][0]
-        print(faceIDs_delete, faceID_keep)
+        faceIDs_delete = result[1:] # get the face IDs of duplicate names which are to be deleted from database
+        faceID_keep = result[0][0] # get the base face ID which is to remain stored in database
         for faceID in faceIDs_delete:
-            print(faceID)
-            query = "DELETE FROM knownFaces WHERE faceID = '%s' AND accountID = '%s'" % (faceID[0], data['accountID'])
+            query = "DELETE FROM knownFaces WHERE faceID = '%s' AND accountID = '%s'" % (faceID[0], data['accountID']) # delete face IDs of duplicate names 
             myCursor.execute(
                 query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
             query = "UPDATE visitorLog SET faceID = '%s' WHERE faceID = '%s' AND accountID = '%s'" % (
-            faceID_keep, faceID[0], data['accountID'])
+            faceID_keep, faceID[0], data['accountID']) 
             myCursor.execute(
                 query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     mydb.commit()  # commits the changes to the MySQL database made by the executed query
