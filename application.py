@@ -14,12 +14,11 @@ application = Flask(
 @application.route("/")
 # homepage route 
 def test():
-    return "Hey there"  # if the pipeline and server is working, the text 'Working' is displayed when the homepage is accessed
+    return "Working"  # if the pipeline and server is working, the text 'Working' is displayed when the homepage route is accessed
 
 
 @application.route("/updateUsers", methods=["POST"])
 # route to add a new user to the 'users' table
-
 def updateUsers():
     try:
         with open("/etc/keys/db.json", "r") as file:
@@ -57,8 +56,7 @@ def verifyUser():
             'password'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
         myCursor.execute(
             query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        result = (
-            myCursor.fetchone())  # returns the first result of the query result (accountID), if there is a result to be returned
+        result = (myCursor.fetchone())  # returns the first result of the query result (accountID), if there is a result to be returned
         return {'result': result[0]}
     else:
         return {'result': 'none'}
@@ -72,7 +70,7 @@ def verifyAccount():
     data = request.form  # assigns the data sent to the API to a variable ('data')
     mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM users WHERE email = '%s')" % (data[
         'email'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
@@ -91,24 +89,21 @@ def view_audioMessages():
     data = request.form  # assigns the data sent to the API to a variable ('data')
     mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    myCursor = mydb.cursor()  # initialises a cursor which allows communicationwith mydb (MySQL database)
+    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
     query = "SELECT EXISTS(SELECT * FROM audioMessages WHERE accountID = '%s')" % (data[
         'accountID'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchone()[
-        0]  # returns all the results of the query result (messageName and messageText), if there is a result to be returned
+    result = myCursor.fetchone()[0] # returns '1' if records exist with user's account ID (i.e. if the user has created audio messages) and '0' if not
     if result == 1:
-        query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (
-        data['accountID'])
+        query = "SELECT messageID, messageName, messageText FROM audioMessages WHERE accountID = '%s'" % (data['accountID'])
         myCursor.execute(
             query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-        result = myCursor.fetchall()  # returns all the results of the query result (messageName and messageText), if there is a result to be returned
+        result = myCursor.fetchall()  # returns all the results of the query  
         result_dict = dict()  # creates a dictionary to store the results from the executed query
         result_dict["length"] = len(
             result)  # add the key 'length' to the dictionary to store the number of audio messages stored in the 'audioMessages' MySQL table for the concerned user
         for i in result:
-            result_dict[str(result.index(
-                i))] = i  # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
+            result_dict[str(result.index(i))] = i  # adds the name of each audio message and the respective data from the field 'fielText' to the dictionary with keys of an incrementing numerical value
         return {'result': result_dict}  # returns a jsonfied object of the results dictionary using the method 'jsonify'
     else:
         return {'result': 'none'}
@@ -262,15 +257,15 @@ def get_averageRate():
     mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
                              database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
     myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
+    query = "SELECT COUNT(*) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"]) # retrieve total number of visits for a user's account
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    count = myCursor.fetchone()[0]
-    query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"])
+    count = myCursor.fetchone()[0] # total number of visits to user's dooorbell
+    query = "SELECT MIN(SUBSTRING(imageTimestamp, 7)) FROM visitorLog WHERE accountID = '%s'" % (data["accountID"]) # retrieve time of first recorded visit to user's doorbell
     myCursor.execute(query)
-    minTime = myCursor.fetchone()[0]
+    initialTime = myCursor.fetchone()[0] # time when user's doorbell first rung
     currentTime = time.time()
-    totalDays = (currentTime-float(minTime))/24/3600
-    averageRate = count/totalDays
+    totalDays = (currentTime-float(initialTime))/24/3600 # total days passed since first visit to user's doorbell
+    averageRate = count/totalDays # average number of visits to user's doorbell
     return {'result': averageRate}
 
 
@@ -393,7 +388,7 @@ def downloadS3():
 
 @application.route("/create_ID", methods=["POST"])
 # route to create a unique faceID for the face captured
-def create_faceID():
+def create_ID():
     data = request.form
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -448,7 +443,6 @@ def get_S3Key():
             return "error"
     except:
         return "error"
-
 
 @application.route("/update_SmartBellIDs", methods=["POST"])
 # route to add data about a new audio message to the 'audioMessages' table
@@ -565,7 +559,7 @@ def checkFaces():
     myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     result = myCursor.fetchall()
     faceIDs = []
-    for faceName in result:
+    for faceName in result: # iterate through duplicate face names
         query = "SELECT faceID FROM knownFaces WHERE faceName = '%s' AND accountID = '%s' " % (
         faceName[0], data['accountID']) # get the face ID for each duplicate face name
         myCursor.execute(
@@ -576,12 +570,10 @@ def checkFaces():
         faceID_keep = result[0][0] # get the base face ID which is to remain stored in database
         for faceID in faceIDs_delete:
             query = "DELETE FROM knownFaces WHERE faceID = '%s' AND accountID = '%s'" % (faceID[0], data['accountID']) # delete face IDs of duplicate names 
-            myCursor.execute(
-                query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+            myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
             query = "UPDATE visitorLog SET faceID = '%s' WHERE faceID = '%s' AND accountID = '%s'" % (
-            faceID_keep, faceID[0], data['accountID']) 
-            myCursor.execute(
-                query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
+            faceID_keep, faceID[0], data['accountID']) # update visitor log to store same face ID for all visits where visitor has same name
+            myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
     mydb.commit()  # commits the changes to the MySQL database made by the executed query
     response = jsonify(faceIDs)
     return response
