@@ -34,7 +34,7 @@ def updateUsers():
         mydb.commit()  # commits the changes to the MySQL database made by the executed query
         return "success"  # confirms that MySQL database was successfully updated
     except:
-        return "error"  # signifies that an error occured when adding the user's data in the 'users' table
+        return "error"  # signifies that an error ocurred when adding the user's data in the 'users' table
 
 
 @application.route("/verifyUser", methods=["POST"])
@@ -176,7 +176,7 @@ def update_audioMessages():
 
 
 @application.route("/update_visitorLog", methods=["POST"])
-# route to add data about a new audio message to the 'audioMessages' table
+# route to add data about a new visit to the 'visitorLog' table
 def update_visitorLog():
     try:
         with open("/etc/keys/db.json", "r") as file:
@@ -196,8 +196,9 @@ def update_visitorLog():
         return "error"
 
 
-@application.route("/view_visitorLog", methods=["POST"])
-def view_visitorLog():
+@application.route("/getVisit", methods=["POST"])
+
+def getVisit():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
@@ -209,7 +210,9 @@ def view_visitorLog():
     result = myCursor.fetchone()
     return jsonify(result)
 
+
 @application.route("/get_visitorLog", methods=["POST"])
+# route to retrieve data about the visits associated with a user's account from the 'visitorLog' table
 def get_visitorLog():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
