@@ -196,9 +196,9 @@ def update_visitorLog():
         return "error"
 
 
-@application.route("/getVisit", methods=["POST"])
+@application.route("/view_visitorLog", methods=["POST"])
 # retrieve details for a particular visit from the table 'visitorLog'
-def getVisit():
+def view_visitorLog():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
@@ -277,9 +277,9 @@ def get_averageRate():
     return {'result': averageRate}
 
 
-@application.route("/latestVisit", methods=["POST"])
-#
-def latestVisit():
+@application.route("/latest_visitorLog", methods=["POST"])
+# retrieve the details about the latest visit the user's doorbell
+def latest_visitorLog():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
@@ -303,7 +303,7 @@ def latestVisit():
 
 
 @application.route("/update_knownFaces", methods=["POST"])
-# route to add data about a new audio message to the 'audioMessages' table
+# route to add data about a new audio message to the 'knownFaces' table
 def update_knownFaces():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -324,6 +324,7 @@ def update_knownFaces():
 
 
 @application.route("/view_knownFaces", methods=["POST"])
+# retrieve
 def view_knownFaces():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
