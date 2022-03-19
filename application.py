@@ -197,7 +197,7 @@ def update_visitorLog():
 
 
 @application.route("/getVisit", methods=["POST"])
-
+# retrieve details for a particular visit from the table 'visitorLog'
 def getVisit():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -225,7 +225,9 @@ def get_visitorLog():
     result = myCursor.fetchall()
     return jsonify(result)
 
+
 @application.route("/get_faceName", methods=["POST"])
+# retrieve the name of a visitor given their face ID from the table 'knownFaces'
 def get_faceName():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -240,6 +242,7 @@ def get_faceName():
 
 
 @application.route("/get_averageTime", methods=["POST"])
+# find the average time of day when the user's doorbell is rung
 def get_averageTime():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -252,7 +255,9 @@ def get_averageTime():
     result = myCursor.fetchone()[0]
     return {'result': result}
 
+
 @application.route("/get_averageRate", methods=["POST"])
+# find the average number of visits per day to the user's doorbell
 def get_averageRate():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -272,8 +277,9 @@ def get_averageRate():
     return {'result': averageRate}
 
 
-@application.route("/latest_visitorLog", methods=["POST"])
-def latest_visitorLog():
+@application.route("/latestVisit", methods=["POST"])
+#
+def latestVisit():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
     data = request.form  # assigns the data sent to the API to a variable ('data')
