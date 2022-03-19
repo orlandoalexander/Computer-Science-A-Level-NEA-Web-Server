@@ -323,22 +323,9 @@ def update_knownFaces():
     return "success"
 
 
-@application.route("/view_knownFaces", methods=["POST"])
-# retrieve
-def view_knownFaces():
-    with open("/etc/keys/db.json", "r") as file:
-        keys = json.load(file)
-    data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
-                             database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT faceName FROM knownFaces WHERE faceID = '%s'" % (data["faceID"])
-    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = myCursor.fetchone()  # returns the first result of the query result (accountID), if there is a result to be returned
-    return jsonify(result)
-
 
 @application.route("/delete_audioMessages", methods=["POST"])
+# delete audio message record from 'audioMessage' table
 def delete_audioMessages():
     try:
         with open("/etc/keys/db.json", "r") as file:
@@ -397,7 +384,7 @@ def downloadS3():
 
 
 @application.route("/create_ID", methods=["POST"])
-# route to create a unique faceID for the face captured
+# route to create a unique ID (face ID, visit ID or account ID)
 def create_ID():
     data = request.form
     with open("/etc/keys/db.json", "r") as file:
@@ -455,7 +442,7 @@ def get_S3Key():
         return "error"
 
 @application.route("/update_SmartBellIDs", methods=["POST"])
-# route to add data about a new audio message to the 'audioMessages' table
+# route to udpate details about SmartBell pairings in table 'SmartBellIDs'
 def update_SmartBellIDs():
     try:
         with open("/etc/keys/db.json", "r") as file:
@@ -478,28 +465,8 @@ def update_SmartBellIDs():
         return 'False'
 
 
-@application.route("/verify_SmartBellID", methods=["POST"])
-# route to check whether the messageID that has been generated for an audio message does not already exist
-def verify_SmartBellID():
-    with open("/etc/keys/db.json", "r") as file:
-        keys = json.load(file)
-    data = request.form  # assigns the data sent to the API to a variable ('data')
-    mydb = connector.connect(host=(keys["host"]), user=(keys["user"]), passwd=(keys["passwd"]),
-                             database="ebdb")  # initialises the database using the details sent to API, which can be accessed with the 'request.form()' method
-    myCursor = mydb.cursor()  # initialises a cursor which allows communication with mydb (MySQL database)
-    query = "SELECT EXISTS(SELECT * FROM SmartBellIDs WHERE id = '%s')" % (data[
-        'id'])  # 'query' variable stores string with MySQL command that is to be executed. The '%s' operator is used to insert variable values into the string.
-    myCursor.execute(query)  # the query is executed in the MySQL database which the variable 'myCursor' is connected to
-    result = (myCursor.fetchone()[
-        0])  # returns the first result of the query result (accountID), if there is a result to be returned
-    if result == 1:
-        return "exists"  # the string 'exists' is returned if the messageID generated is already used by another audio message in the 'audioMessages' table
-    else:
-        return "notExists"  # the string 'notExists' is returned if the messageID generated is not already used by another audio message in the 'audioMessages' table
-
-
 @application.route("/verifyPairing", methods=["POST"])
-# route to check whether the messageID that has been generated for an audio message does not already exist
+# route to check whether user has successfully paired with the a particular SmartBell
 def verifyPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -514,7 +481,7 @@ def verifyPairing():
 
 
 @application.route("/checkPairing", methods=["POST"])
-# route to check whether the messageID that has been generated for an audio message does not already exist
+# route to check whether a particular SmartBell ID already exists
 def checkPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
@@ -533,7 +500,7 @@ def checkPairing():
 
 
 @application.route("/getPairing", methods=["POST"])
-# route to check whether the messageID that has been generated for an audio message does not already exist
+# route to retrieve the pairing status for a particular user account
 def getPairing():
     with open("/etc/keys/db.json", "r") as file:
         keys = json.load(file)
